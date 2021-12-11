@@ -40,9 +40,13 @@ try {
 
     app.UseSerilogRequestLogging();
 
+    app.UseRouting();
+
     app.UseAuthorization();
 
-    app.MapControllers();
+    app.UseEndpoints(endpoints => {
+        endpoints.MapControllers();
+    });
 
     app.Run();
 } catch (Exception ex) {
