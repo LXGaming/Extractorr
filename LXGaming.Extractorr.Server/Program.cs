@@ -27,6 +27,7 @@ try {
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddHealthChecks();
     builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
@@ -46,6 +47,7 @@ try {
 
     app.UseEndpoints(endpoints => {
         endpoints.MapControllers();
+        endpoints.MapHealthChecks("/health").RequireHost("127.0.0.1");
     });
 
     app.Run();
