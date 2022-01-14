@@ -30,7 +30,6 @@ try {
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHealthChecks();
-    builder.Services.AddSwaggerGen();
 
     builder.Services.Configure<ForwardedHeadersOptions>(options => {
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -45,11 +44,6 @@ try {
     var app = builder.Build();
 
     app.UseForwardedHeaders();
-
-    if (app.Environment.IsDevelopment()) {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
 
     app.UseHttpsRedirection();
 
