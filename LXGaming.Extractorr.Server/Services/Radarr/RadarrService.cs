@@ -36,7 +36,7 @@ public class RadarrService : IHostedService {
         return eventType switch {
             EventType.Download => OnImportAsync(document.Deserialize<Import>()),
             EventType.Grab => OnGrabAsync(document.Deserialize<Grab>()),
-            EventType.Test => OnTestAsync(),
+            EventType.Test => OnTestAsync(document.Deserialize<Grab>()),
             _ => OnUnknownAsync(eventType)
         };
     }
@@ -78,7 +78,7 @@ public class RadarrService : IHostedService {
         return Task.CompletedTask;
     }
 
-    private Task OnTestAsync() {
+    private Task OnTestAsync(Grab? grab) {
         _logger.LogInformation("Test Successful");
         return Task.CompletedTask;
     }
