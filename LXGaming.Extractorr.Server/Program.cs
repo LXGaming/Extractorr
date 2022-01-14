@@ -32,6 +32,7 @@ Log.Information("Initializing...");
 try {
     var builder = WebApplication.CreateBuilder(args);
 
+    builder.Configuration.AddEnvironmentVariables();
     builder.Host.UseSerilog();
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
