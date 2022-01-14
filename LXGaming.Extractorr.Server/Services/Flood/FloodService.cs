@@ -13,6 +13,8 @@ namespace LXGaming.Extractorr.Server.Services.Flood;
 
 public class FloodService : IHostedService {
 
+    private const uint DefaultReconnectDelay = 2;
+    private const uint DefaultMaximumReconnectDelay = 300; // 5 Minutes
     private readonly FloodOptions _options;
     private readonly EventService _eventService;
     private readonly ExtractionService _extractionService;
@@ -51,13 +53,29 @@ public class FloodService : IHostedService {
         _httpClient.BaseAddress = new Uri(_options.Address);
         _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Constants.Application.UserAgent);
 
-        var authenticate = await AuthenticateAsync(_options.Username, _options.Password);
-        if (authenticate is not { Success: true }) {
-            _logger.LogWarning("Flood authentication failed");
-            return;
-        }
+        var reconnectDelay = DefaultReconnectDelay;
+        while (true) {
+            try {
+                var authenticate = await AuthenticateAsync(_options.Username, _options.Password);
+                if (authenticate is not { Success: true }) {
+                    _logger.LogWarning("Flood authentication failed");
+                    return;
+                }
 
-        _logger.LogInformation("Connected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
+                _logger.LogInformation("Connected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
+                break;
+            } catch (HttpRequestException ex) {
+                if (ex is { StatusCode: HttpStatusCode.Forbidden }) {
+                    throw;
+                }
+
+                var delay = TimeSpan.FromSeconds(reconnectDelay);
+                reconnectDelay = Math.Min(reconnectDelay << 1, DefaultMaximumReconnectDelay);
+
+                _logger.LogWarning("Connection failed! Next attempt in {Delay}: {Message}", delay, ex.Message);
+                await Task.Delay(delay, cancellationToken);
+            }
+        }
 
         var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
         await scheduler.ScheduleJobAsync<FloodJob>(FloodJob.JobKey, TriggerBuilder.Create().WithCronSchedule(_options.Schedule).Build());
