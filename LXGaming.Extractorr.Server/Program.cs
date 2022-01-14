@@ -1,4 +1,6 @@
 using System.IO.Compression;
+using System.Net;
+using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.File.Archive;
@@ -30,7 +32,19 @@ try {
     builder.Services.AddHealthChecks();
     builder.Services.AddSwaggerGen();
 
+    builder.Services.Configure<ForwardedHeadersOptions>(options => {
+        options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        builder.Configuration
+            .GetSection("ForwardedHeaders:KnownProxies")
+            .Get<List<string>>()
+            .Select(IPAddress.Parse)
+            .ToList()
+            .ForEach(options.KnownProxies.Add);
+    });
+
     var app = builder.Build();
+
+    app.UseForwardedHeaders();
 
     if (app.Environment.IsDevelopment()) {
         app.UseSwagger();
