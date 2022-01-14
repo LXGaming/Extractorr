@@ -1,6 +1,7 @@
 using System.IO.Compression;
 using System.Net;
 using Microsoft.AspNetCore.HttpOverrides;
+using Quartz;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.File.Archive;
@@ -9,6 +10,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+    .MinimumLevel.Override("Quartz", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.File(
@@ -30,6 +32,8 @@ try {
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHealthChecks();
+    builder.Services.AddQuartz(configurator => configurator.UseMicrosoftDependencyInjectionJobFactory());
+    builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
     builder.Services.Configure<ForwardedHeadersOptions>(options => {
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
