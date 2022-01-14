@@ -14,7 +14,7 @@ public class TorrentContent {
     public string? Path { get; set; }
 
     [JsonPropertyName("percentComplete")]
-    public long PercentComplete { get; set; }
+    public decimal PercentComplete { get; set; }
 
     [JsonPropertyName("priority")]
     public TorrentContentPriority Priority { get; set; }

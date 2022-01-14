@@ -29,7 +29,7 @@ public class TorrentProperties {
     public long DownTotal { get; set; }
 
     [JsonPropertyName("eta")]
-    public long Eta { get; set; }
+    public decimal Eta { get; set; }
 
     [JsonPropertyName("hash")]
     public string? Hash { get; set; }
@@ -56,7 +56,7 @@ public class TorrentProperties {
     public long PeersTotal { get; set; }
 
     [JsonPropertyName("percentComplete")]
-    public long PercentComplete { get; set; }
+    public decimal PercentComplete { get; set; }
 
     [JsonPropertyName("priority")]
     public TorrentPriority Priority { get; set; }
