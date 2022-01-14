@@ -38,6 +38,8 @@ try {
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHealthChecks();
+
+    builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quartz"));
     builder.Services.AddQuartz(configurator => configurator.UseMicrosoftDependencyInjectionJobFactory());
     builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
