@@ -1,6 +1,7 @@
 # Extractorr
 
 [![License](https://lxgaming.github.io/badges/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Docker Pulls](https://img.shields.io/docker/pulls/lxgaming/extractorr)](https://hub.docker.com/r/lxgaming/extractorr)
 
 ## Docker
 ### Compose
