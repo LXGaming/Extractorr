@@ -4,24 +4,24 @@ namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
 public class Import {
 
-    [JsonPropertyName("DownloadClient")]
+    [JsonPropertyName("downloadClient")]
     public string? DownloadClient { get; set; }
 
-    [JsonPropertyName("DownloadId")]
+    [JsonPropertyName("downloadId")]
     public string? DownloadId { get; set; }
 
-    [JsonPropertyName("DeletedFiles")]
+    [JsonPropertyName("deletedFiles")]
     public List<MovieFile>? DeletedFiles { get; set; }
 
-    [JsonPropertyName("IsUpgrade")]
+    [JsonPropertyName("isUpgrade")]
     public bool IsUpgrade { get; set; }
 
-    [JsonPropertyName("Movie")]
+    [JsonPropertyName("movie")]
     public Movie? Movie { get; set; }
 
-    [JsonPropertyName("MovieFile")]
+    [JsonPropertyName("movieFile")]
     public MovieFile? MovieFile { get; set; }
 
-    [JsonPropertyName("RemoteMovie")]
+    [JsonPropertyName("remoteMovie")]
     public RemoteMovie? RemoteMovie { get; set; }
 }

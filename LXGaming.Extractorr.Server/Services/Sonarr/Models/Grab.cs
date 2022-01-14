@@ -4,18 +4,18 @@ namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
 public class Grab {
 
-    [JsonPropertyName("DownloadClient")]
+    [JsonPropertyName("downloadClient")]
     public string? DownloadClient { get; set; }
 
-    [JsonPropertyName("DownloadId")]
+    [JsonPropertyName("downloadId")]
     public string? DownloadId { get; set; }
 
-    [JsonPropertyName("Episodes")]
+    [JsonPropertyName("episodes")]
     public List<Episode>? Episodes { get; set; }
 
-    [JsonPropertyName("Release")]
+    [JsonPropertyName("release")]
     public Release? Release { get; set; }
 
-    [JsonPropertyName("Series")]
+    [JsonPropertyName("series")]
     public Series? Series { get; set; }
 }

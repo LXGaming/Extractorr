@@ -4,24 +4,24 @@ namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
 public class Series {
 
-    [JsonPropertyName("Id")]
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("ImdbId")]
+    [JsonPropertyName("imdbId")]
     public string? ImdbId { get; set; }
 
-    [JsonPropertyName("Path")]
+    [JsonPropertyName("path")]
     public string? Path { get; set; }
 
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string? Title { get; set; }
 
-    [JsonPropertyName("TvdbId")]
+    [JsonPropertyName("tvdbId")]
     public int TvdbId { get; set; }
 
-    [JsonPropertyName("TvMazeId")]
+    [JsonPropertyName("tvMazeId")]
     public int TvMazeId { get; set; }
 
-    [JsonPropertyName("Type")]
+    [JsonPropertyName("type")]
     public SeriesType Type { get; set; }
 }

@@ -4,27 +4,27 @@ namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
 public class Movie {
 
-    [JsonPropertyName("FilePath")]
+    [JsonPropertyName("filePath")]
     public string? FilePath { get; set; }
 
-    [JsonPropertyName("FolderPath")]
+    [JsonPropertyName("folderPath")]
     public string? FolderPath { get; set; }
 
-    [JsonPropertyName("Id")]
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("ImdbId")]
+    [JsonPropertyName("imdbId")]
     public string? ImdbId { get; set; }
 
-    [JsonPropertyName("ReleaseDate")]
+    [JsonPropertyName("releaseDate")]
     public string? ReleaseDate { get; set; }
 
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string? Title { get; set; }
 
-    [JsonPropertyName("TmdbId")]
+    [JsonPropertyName("tmdbId")]
     public int TmdbId { get; set; }
 
-    [JsonPropertyName("Year")]
+    [JsonPropertyName("year")]
     public int Year { get; set; }
 }

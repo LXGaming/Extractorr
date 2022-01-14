@@ -1,5 +1,8 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
+﻿using System.Text.Json.Serialization;
 
+namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum SeriesType {
 
     Standard = 0,

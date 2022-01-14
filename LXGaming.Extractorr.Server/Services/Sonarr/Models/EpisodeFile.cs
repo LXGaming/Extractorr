@@ -4,27 +4,27 @@ namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
 public class EpisodeFile {
 
-    [JsonPropertyName("Id")]
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("Path")]
+    [JsonPropertyName("path")]
     public string? Path { get; set; }
 
-    [JsonPropertyName("Quality")]
+    [JsonPropertyName("quality")]
     public string? Quality { get; set; }
 
-    [JsonPropertyName("QualityVersion")]
+    [JsonPropertyName("qualityVersion")]
     public int QualityVersion { get; set; }
 
-    [JsonPropertyName("RelativePath")]
+    [JsonPropertyName("relativePath")]
     public string? RelativePath { get; set; }
 
-    [JsonPropertyName("ReleaseGroup")]
+    [JsonPropertyName("releaseGroup")]
     public string? ReleaseGroup { get; set; }
 
-    [JsonPropertyName("SceneName")]
+    [JsonPropertyName("sceneName")]
     public string? SceneName { get; set; }
 
-    [JsonPropertyName("Size")]
+    [JsonPropertyName("size")]
     public long Size { get; set; }
 }

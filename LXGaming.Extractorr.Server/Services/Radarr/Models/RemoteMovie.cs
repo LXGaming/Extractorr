@@ -4,15 +4,15 @@ namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
 public class RemoteMovie {
 
-    [JsonPropertyName("ImdbId")]
+    [JsonPropertyName("imdbId")]
     public string? ImdbId { get; set; }
 
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string? Title { get; set; }
 
-    [JsonPropertyName("TmdbId")]
+    [JsonPropertyName("tmdbId")]
     public int TmdbId { get; set; }
 
-    [JsonPropertyName("Year")]
+    [JsonPropertyName("year")]
     public int Year { get; set; }
 }

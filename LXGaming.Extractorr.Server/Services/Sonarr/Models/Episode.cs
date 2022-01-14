@@ -4,21 +4,21 @@ namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
 public class Episode {
 
-    [JsonPropertyName("AirDate")]
+    [JsonPropertyName("airDate")]
     public string? AirDate { get; set; }
 
-    [JsonPropertyName("AirDateUtc")]
+    [JsonPropertyName("airDateUtc")]
     public DateTime? AirDateUtc { get; set; }
 
-    [JsonPropertyName("EpisodeNumber")]
+    [JsonPropertyName("episodeNumber")]
     public int EpisodeNumber { get; set; }
 
-    [JsonPropertyName("Id")]
+    [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("SeasonNumber")]
+    [JsonPropertyName("seasonNumber")]
     public int SeasonNumber { get; set; }
 
-    [JsonPropertyName("Title")]
+    [JsonPropertyName("title")]
     public string? Title { get; set; }
 }

@@ -4,24 +4,24 @@ namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
 public class Import {
 
-    [JsonPropertyName("DownloadClient")]
+    [JsonPropertyName("downloadClient")]
     public string? DownloadClient { get; set; }
 
-    [JsonPropertyName("DownloadId")]
+    [JsonPropertyName("downloadId")]
     public string? DownloadId { get; set; }
 
-    [JsonPropertyName("DeletedFiles")]
+    [JsonPropertyName("deletedFiles")]
     public List<EpisodeFile>? DeletedFiles { get; set; }
 
-    [JsonPropertyName("Episodes")]
+    [JsonPropertyName("episodes")]
     public List<Episode>? Episodes { get; set; }
 
-    [JsonPropertyName("EpisodeFile")]
+    [JsonPropertyName("episodeFile")]
     public List<EpisodeFile>? EpisodeFile { get; set; }
 
-    [JsonPropertyName("IsUpgrade")]
+    [JsonPropertyName("isUpgrade")]
     public bool IsUpgrade { get; set; }
 
-    [JsonPropertyName("Series")]
+    [JsonPropertyName("series")]
     public Series? Series { get; set; }
 }
