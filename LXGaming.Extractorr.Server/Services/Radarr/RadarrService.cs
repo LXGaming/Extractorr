@@ -71,10 +71,8 @@ public class RadarrService : IHostedService {
             return Task.CompletedTask;
         }
 
-        var files = new List<string> { import.MovieFile.Path };
-
-        _logger.LogInformation("Import {DownloadId}: {Files}", import.DownloadId, string.Join(", ", files));
-        _eventService.OnImport(import.DownloadId, new List<string> { import.MovieFile.Path }, Options.DeleteOnImport);
+        _logger.LogInformation("Import {File} ({DownloadId})", import.MovieFile.Path, import.DownloadId);
+        _eventService.OnImport(import.DownloadId, import.MovieFile.Path, Options.DeleteOnImport);
         return Task.CompletedTask;
     }
 

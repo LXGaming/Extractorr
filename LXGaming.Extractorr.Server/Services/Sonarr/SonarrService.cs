@@ -66,22 +66,13 @@ public class SonarrService : IHostedService {
             return Task.CompletedTask;
         }
 
-        if (import.EpisodeFile == null || import.EpisodeFile.Count == 0) {
+        if (import.EpisodeFile == null || string.IsNullOrEmpty(import.EpisodeFile.Path)) {
             _logger.LogWarning("Invalid Import: Missing EpisodeFile");
             return Task.CompletedTask;
         }
 
-        var files = new List<string>();
-        foreach (var episodeFile in import.EpisodeFile) {
-            if (string.IsNullOrEmpty(episodeFile.Path)) {
-                continue;
-            }
-
-            files.Add(episodeFile.Path);
-        }
-
-        _logger.LogInformation("Import {DownloadId}: {Files}", import.DownloadId, string.Join(", ", files));
-        _eventService.OnImport(import.DownloadId, files, Options.DeleteOnImport);
+        _logger.LogInformation("Import {File} ({DownloadId})", import.EpisodeFile.Path, import.DownloadId);
+        _eventService.OnImport(import.DownloadId, import.EpisodeFile.Path, Options.DeleteOnImport);
         return Task.CompletedTask;
     }
 

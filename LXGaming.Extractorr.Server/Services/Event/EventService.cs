@@ -26,6 +26,10 @@ public class EventService : IHostedService {
         }));
     }
 
+    public void OnImport(string id, string file, bool delete) {
+        OnImport(id, new List<string> { file }, delete);
+    }
+
     public void OnImport(string id, List<string> files, bool delete) {
         Task.Run(() => Import?.Invoke(this, new ImportEventArgs {
             Id = id,

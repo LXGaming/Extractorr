@@ -17,7 +17,7 @@ public class Import {
     public List<Episode>? Episodes { get; set; }
 
     [JsonPropertyName("episodeFile")]
-    public List<EpisodeFile>? EpisodeFile { get; set; }
+    public EpisodeFile? EpisodeFile { get; set; }
 
     [JsonPropertyName("isUpgrade")]
     public bool IsUpgrade { get; set; }
