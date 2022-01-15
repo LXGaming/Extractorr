@@ -30,6 +30,10 @@ public class SonarrService : IHostedService {
     }
 
     public Task ExecuteAsync(JsonDocument document) {
+        if (Options.DebugWebhooks) {
+            _logger.LogDebug("{Content}", JsonSerializer.Serialize(document));
+        }
+
         var eventType = document.RootElement.GetProperty("eventType").Deserialize<EventType>();
 
         _logger.LogDebug("Processing {EventType} for Sonarr", eventType);
