@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Sonarr.Models;
+using LXGaming.Extractorr.Server.Utilities;
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr;
 
@@ -71,8 +72,15 @@ public class SonarrService : IHostedService {
             return Task.CompletedTask;
         }
 
-        _logger.LogInformation("Import {File} ({DownloadId})", import.EpisodeFile.Path, import.DownloadId);
-        _eventService.OnImport(import.DownloadId, import.EpisodeFile.Path, Options.DeleteOnImport);
+        var path = Options.RemotePathMappings != null
+            ? Toolbox.GetMappedPath(Options.RemotePathMappings, import.EpisodeFile.Path)
+            : import.EpisodeFile.Path;
+        if (!import.EpisodeFile.Path.Equals(path)) {
+            _logger.LogInformation("Mapped {Remote} -> {Local}", import.EpisodeFile.Path, path);
+        }
+
+        _logger.LogInformation("Import {File} ({DownloadId})", path, import.DownloadId);
+        _eventService.OnImport(import.DownloadId, path, Options.DeleteOnImport);
         return Task.CompletedTask;
     }
 

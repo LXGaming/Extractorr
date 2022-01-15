@@ -9,4 +9,6 @@ public class SonarrOptions {
     public string? Password { get; set; }
 
     public bool DeleteOnImport { get; set; }
+
+    public Dictionary<string, string>? RemotePathMappings { get; set; }
 }

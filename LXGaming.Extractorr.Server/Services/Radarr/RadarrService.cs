@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Radarr.Models;
+using LXGaming.Extractorr.Server.Utilities;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr;
 
@@ -71,8 +72,15 @@ public class RadarrService : IHostedService {
             return Task.CompletedTask;
         }
 
-        _logger.LogInformation("Import {File} ({DownloadId})", import.MovieFile.Path, import.DownloadId);
-        _eventService.OnImport(import.DownloadId, import.MovieFile.Path, Options.DeleteOnImport);
+        var path = Options.RemotePathMappings != null
+            ? Toolbox.GetMappedPath(Options.RemotePathMappings, import.MovieFile.Path)
+            : import.MovieFile.Path;
+        if (!import.MovieFile.Path.Equals(path)) {
+            _logger.LogInformation("Mapped {Remote} -> {Local}", import.MovieFile.Path, path);
+        }
+
+        _logger.LogInformation("Import {File} ({DownloadId})", path, import.DownloadId);
+        _eventService.OnImport(import.DownloadId, path, Options.DeleteOnImport);
         return Task.CompletedTask;
     }
 
