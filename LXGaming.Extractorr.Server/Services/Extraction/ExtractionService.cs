@@ -27,6 +27,14 @@ public class ExtractionService : IHostedService {
             return false;
         }
 
+        var files = Directory.EnumerateFiles(path)
+            .Where(IsExtractable)
+            .ToList();
+        if (files.Count == 0) {
+            _logger.LogInformation("No extractable files found in {Path}", path);
+            return true;
+        }
+
         var extractorrPath = Path.Join(path, $".{Constants.Application.Id}");
         if (Directory.Exists(extractorrPath)) {
             _logger.LogDebug("Cleaning up existing {Path}", extractorrPath);
@@ -34,14 +42,6 @@ public class ExtractionService : IHostedService {
         } else {
             _logger.LogDebug("Creating {Path}", extractorrPath);
             Directory.CreateDirectory(extractorrPath);
-        }
-
-        var files = Directory.EnumerateFiles(path)
-            .Where(IsExtractable)
-            .ToList();
-        if (files.Count == 0) {
-            _logger.LogInformation("No extractable files found in {Path}", path);
-            return true;
         }
 
         foreach (var file in files) {
