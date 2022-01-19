@@ -3,13 +3,44 @@
 [![License](https://lxgaming.github.io/badges/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Docker Pulls](https://img.shields.io/docker/pulls/lxgaming/extractorr)](https://hub.docker.com/r/lxgaming/extractorr)
 
-## Docker
-### Compose
+Extractorr is a file extraction program for [Radarr](https://github.com/Radarr/Radarr) and [Sonarr](https://github.com/Sonarr/Sonarr).
+It extracts files by monitoring [Flood](https://github.com/jesec/flood) for completed torrents tagged with `extractorr` 
+
+## Setup
+### Radarr / Sonarr
+Setting -> Connect -> + -> Webhook\
+Triggers:
+- On Grab: Torrent is tagged with `extractorr`
+- On Import: Torrent file is optionally deleted
+
+## Usage
+### docker-compose (Recommended)
+Download and use [appsettings.json](https://raw.githubusercontent.com/LXGaming/Extractorr/main/LXGaming.Extractorr.Server/appsettings.json)
 ```yaml
+version: "3"
 services:
   extractorr:
+    container_name: extractorr
     environment:
-      - FORWARDEDHEADERS__KNOWNPROXIES__0=127.0.0.1
+      - TZ=Pacific/Auckland
+    image: lxgaming/extractorr:latest
+    ports:
+      - 80:80
+    restart: unless-stopped
+    volumes:
+      - /path/to/downloads:/path/to/downloads
+      - /path/to/extractorr/logs:/app/logs
+      - /path/to/extractorr/appsettings.json:/app/appsettings.json:ro
+```
+
+### docker-compose
+Use environment variables
+```yaml
+version: "3"
+services:
+  extractorr:
+    container_name: extractorr
+    environment:
       - FLOOD__ADDRESS=https://flood.example.com/
       - FLOOD__USERNAME=extractorr
       - FLOOD__PASSWORD=password
@@ -19,10 +50,13 @@ services:
       - SONARR__USERNAME=sonarr
       - SONARR__PASSWORD=password
       - SONARR__DELETEONIMPORT=true
-    hostname: extractorr
+      - TZ=Pacific/Auckland
     image: lxgaming/extractorr:latest
     ports:
       - 80:80
+    restart: unless-stopped
+    volumes:
+      - /path/to/downloads:/path/to/downloads
 ```
 
 ## License
