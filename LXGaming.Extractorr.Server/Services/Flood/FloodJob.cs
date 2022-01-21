@@ -30,6 +30,23 @@ public class FloodJob : IJob {
         var excludedTorrents = context.TryGetOrCreateValue<HashSet<string>>(TorrentsKey);
         excludedTorrents.RemoveWhere(key => !torrentListSummary.Torrents.ContainsKey(key));
 
+        if (_floodService.Options.SkipActiveExtraction) {
+            var activeTorrents = torrentListSummary.Torrents
+                .Where(pair => pair.Value.Status != null
+                               && pair.Value.Status.Contains(TorrentStatus.Active)
+                               && !pair.Value.Status.Contains(TorrentStatus.Complete)
+                               && pair.Value.Status.Contains(TorrentStatus.Downloading))
+                .ToList();
+            if (activeTorrents.Count != 0) {
+                _logger.LogDebug("Skipping extraction due to the following torrents:");
+                foreach (var (key, value) in activeTorrents) {
+                    _logger.LogDebug("- {Name} ({Id})", value.Name, key);
+                }
+
+                return;
+            }
+        }
+
         foreach (var (key, value) in torrentListSummary.Torrents) {
             if (excludedTorrents.Contains(key) || value.Status == null || value.Tags == null) {
                 continue;

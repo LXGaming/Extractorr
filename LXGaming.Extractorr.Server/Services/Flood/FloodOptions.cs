@@ -11,4 +11,6 @@ public class FloodOptions {
     public string? Password { get; set; }
 
     public string? Schedule { get; set; }
+
+    public bool SkipActiveExtraction { get; set; }
 }

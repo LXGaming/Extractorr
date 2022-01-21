@@ -15,7 +15,7 @@ public class FloodService : IHostedService {
 
     private const uint DefaultReconnectDelay = 2;
     private const uint DefaultMaximumReconnectDelay = 300; // 5 Minutes
-    private readonly FloodOptions _options;
+    public readonly FloodOptions Options;
     private readonly EventService _eventService;
     private readonly ExtractionService _extractionService;
     private readonly ILogger<FloodService> _logger;
@@ -23,7 +23,7 @@ public class FloodService : IHostedService {
     private HttpClient? _httpClient;
 
     public FloodService(IConfiguration configuration, EventService eventService, ExtractionService extractionService, ILogger<FloodService> logger, ISchedulerFactory schedulerFactory) {
-        _options = configuration.GetSection(FloodOptions.Key).Get<FloodOptions>();
+        Options = configuration.GetSection(FloodOptions.Key).Get<FloodOptions>();
         _eventService = eventService;
         _extractionService = extractionService;
         _logger = logger;
@@ -31,17 +31,17 @@ public class FloodService : IHostedService {
     }
 
     public async Task StartAsync(CancellationToken cancellationToken) {
-        if (string.IsNullOrEmpty(_options.Address)) {
+        if (string.IsNullOrEmpty(Options.Address)) {
             _logger.LogWarning("Flood address has not been configured");
             return;
         }
 
-        if (string.IsNullOrEmpty(_options.Username) || string.IsNullOrEmpty(_options.Password)) {
+        if (string.IsNullOrEmpty(Options.Username) || string.IsNullOrEmpty(Options.Password)) {
             _logger.LogWarning("Flood credentials have not been configured");
             return;
         }
 
-        if (string.IsNullOrEmpty(_options.Schedule)) {
+        if (string.IsNullOrEmpty(Options.Schedule)) {
             _logger.LogWarning("Flood schedule has not been configured");
             return;
         }
@@ -50,13 +50,13 @@ public class FloodService : IHostedService {
             CookieContainer = new CookieContainer(),
             UseCookies = true
         });
-        _httpClient.BaseAddress = new Uri(_options.Address);
+        _httpClient.BaseAddress = new Uri(Options.Address);
         _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", Constants.Application.UserAgent);
 
         var reconnectDelay = DefaultReconnectDelay;
         while (true) {
             try {
-                var authenticate = await AuthenticateAsync(_options.Username, _options.Password);
+                var authenticate = await AuthenticateAsync(Options.Username, Options.Password);
                 if (authenticate is not { Success: true }) {
                     _logger.LogWarning("Flood authentication failed");
                     return;
@@ -78,7 +78,7 @@ public class FloodService : IHostedService {
         }
 
         var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
-        await scheduler.ScheduleJobAsync<FloodJob>(FloodJob.JobKey, TriggerBuilder.Create().WithCronSchedule(_options.Schedule).Build());
+        await scheduler.ScheduleJobAsync<FloodJob>(FloodJob.JobKey, TriggerBuilder.Create().WithCronSchedule(Options.Schedule).Build());
 
         _eventService.Grab += OnGrabAsync;
         _eventService.Import += OnImportAsync;
@@ -98,7 +98,7 @@ public class FloodService : IHostedService {
             }
         }
 
-        var authenticate = await AuthenticateAsync(_options.Username ?? "", _options.Password ?? "");
+        var authenticate = await AuthenticateAsync(Options.Username ?? "", Options.Password ?? "");
         if (authenticate is not { Success: true }) {
             return default;
         }
