@@ -21,17 +21,19 @@ public class ExtractionService : IHostedService {
         return Task.CompletedTask;
     }
 
-    public bool Execute(string? path) {
-        if (!Directory.Exists(path)) {
-            _logger.LogWarning("Invalid Extraction: {Path} is not a directory", path);
+    public bool Execute(string path, IEnumerable<string> files) {
+        var absoluteDirectoryPath = Toolbox.GetFullDirectoryPath(path);
+        if (!Directory.Exists(absoluteDirectoryPath)) {
+            _logger.LogWarning("Invalid Extraction: {Directory} does not exist", absoluteDirectoryPath);
             return false;
         }
 
-        var files = Directory.EnumerateFiles(path)
+        var extractableFiles = files
+            .Where(File.Exists)
             .Where(IsExtractable)
             .ToList();
-        if (files.Count == 0) {
-            _logger.LogInformation("No extractable files found in {Path}", path);
+        if (extractableFiles.Count == 0) {
+            _logger.LogInformation("No extractable files");
             return true;
         }
 
@@ -44,7 +46,7 @@ public class ExtractionService : IHostedService {
             Directory.CreateDirectory(extractorrPath);
         }
 
-        foreach (var file in files) {
+        foreach (var file in extractableFiles) {
             if (!Extract(file, extractorrPath)) {
                 break;
             }

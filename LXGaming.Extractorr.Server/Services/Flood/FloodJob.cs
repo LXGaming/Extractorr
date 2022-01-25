@@ -48,7 +48,7 @@ public class FloodJob : IJob {
         }
 
         foreach (var (key, value) in torrentListSummary.Torrents) {
-            if (excludedTorrents.Contains(key) || value.Status == null || value.Tags == null) {
+            if (excludedTorrents.Contains(key) || string.IsNullOrEmpty(value.Directory) || value.Status == null || value.Tags == null) {
                 continue;
             }
 
@@ -56,10 +56,15 @@ public class FloodJob : IJob {
                 continue;
             }
 
-            _logger.LogDebug("Processing {Name} ({Id}) for extraction", value.Name, key);
-            if (!_extractionService.Execute(value.Directory)) {
-                excludedTorrents.Add(key);
-                continue;
+            var torrentFiles = await _floodService.GetTorrentFilesAsync(value);
+            if (torrentFiles.Any(_extractionService.IsExtractable)) {
+                _logger.LogDebug("Processing {Name} ({Id}) for extraction", value.Name, key);
+                if (!_extractionService.Execute(value.Directory, torrentFiles)) {
+                    excludedTorrents.Add(key);
+                    continue;
+                }
+            } else {
+                _logger.LogWarning("Skipping {Name} ({Id}) due to no extractable contents", value.Name, key);
             }
 
             value.Tags.Remove(Constants.Application.Id);
