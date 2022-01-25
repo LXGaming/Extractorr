@@ -144,6 +144,38 @@ public class FloodService : IHostedService {
         return await JsonSerializer.DeserializeAsync<TorrentListSummary>(stream, Toolbox.JsonSerializerOptions);
     }
 
+    public async Task<List<string>> GetTorrentFilesAsync(TorrentProperties torrentProperties) {
+        if (string.IsNullOrEmpty(torrentProperties.Directory) || string.IsNullOrEmpty(torrentProperties.Hash)) {
+            throw new InvalidOperationException("Invalid TorrentProperties");
+        }
+
+        var absoluteDirectoryPath = Toolbox.GetFullDirectoryPath(torrentProperties.Directory);
+        if (!Directory.Exists(absoluteDirectoryPath)) {
+            throw new InvalidOperationException($"{absoluteDirectoryPath} does not exist");
+        }
+
+        var torrentContents = await GetTorrentContentsAsync(torrentProperties.Hash);
+        if (torrentContents == null || torrentContents.Count == 0) {
+            throw new InvalidOperationException($"{torrentProperties.Hash} has no contents");
+        }
+
+        var files = new List<string>();
+        foreach (var torrentContent in torrentContents) {
+            if (string.IsNullOrEmpty(torrentContent.Path)) {
+                continue;
+            }
+
+            var absoluteFilePath = Path.GetFullPath(torrentContent.Path, absoluteDirectoryPath);
+            if (!File.Exists(absoluteFilePath)) {
+                throw new InvalidOperationException($"{absoluteFilePath} does not exist");
+            }
+
+            files.Add(absoluteFilePath);
+        }
+
+        return files;
+    }
+
     public async Task<List<TorrentContent>?> GetTorrentContentsAsync(string hash) {
         if (_httpClient == null) {
             throw new InvalidOperationException("HttpClient is unavailable");
@@ -191,7 +223,7 @@ public class FloodService : IHostedService {
         }
 
         var torrentProperties = await GetTorrentAsync(eventArgs.Id);
-        if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Hash) || string.IsNullOrEmpty(torrentProperties.Directory)) {
+        if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Directory)) {
             _logger.LogWarning("Invalid Import: {Id} does not exist", eventArgs.Id);
             return;
         }
@@ -202,13 +234,8 @@ public class FloodService : IHostedService {
             return;
         }
 
-        var torrentContents = await GetTorrentContentsAsync(torrentProperties.Hash);
-        if (torrentContents == null || torrentContents.Count == 0) {
-            _logger.LogWarning("Invalid Torrent: {Id} has no contents", eventArgs.Id);
-            return;
-        }
-
-        if (!torrentContents.Any(content => _extractionService.IsExtractable(content.Filename))) {
+        var torrentFiles = await GetTorrentFilesAsync(torrentProperties);
+        if (!torrentFiles.Any(_extractionService.IsExtractable)) {
             _logger.LogWarning("Invalid Torrent: {Id} has no extractable contents", eventArgs.Id);
             return;
         }
@@ -225,8 +252,7 @@ public class FloodService : IHostedService {
                 continue;
             }
 
-            var relativeFilePath = Path.GetRelativePath(absoluteDirectoryPath, absoluteFilePath);
-            if (torrentContents.Any(content => string.Equals(content.Path, relativeFilePath, StringComparison.OrdinalIgnoreCase))) {
+            if (torrentFiles.Any(torrentFile => string.Equals(torrentFile, absoluteFilePath, StringComparison.OrdinalIgnoreCase))) {
                 _logger.LogWarning("Invalid Import File: {File} is part of the torrent", absoluteFilePath);
                 continue;
             }
