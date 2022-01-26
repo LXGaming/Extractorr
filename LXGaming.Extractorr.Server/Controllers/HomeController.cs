@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LXGaming.Extractorr.Server.Utilities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LXGaming.Extractorr.Server.Controllers;
 
@@ -9,7 +10,12 @@ public class HomeController : ControllerBase {
     [HttpGet]
     public IActionResult OnGet() {
         return Ok(new {
-            Application = "Extractorr API"
+            Id = Constants.Application.Id,
+            Name = Constants.Application.Name,
+            Version = Constants.Application.Version,
+            Authors = Constants.Application.Authors,
+            Source = Constants.Application.Source,
+            Website = Constants.Application.Website,
         });
     }
 }

@@ -8,6 +8,7 @@ public static class Constants {
         public const string Name = "Extractorr";
         public const string Version = "1.0.8";
         public const string Authors = "LX_Gaming";
+        public const string Source = "https://github.com/LXGaming/Extractorr";
         public const string Website = "https://lxgaming.github.io/";
         public const string UserAgent = Name + "/" + Version + " (+" + Website + ")";
     }
