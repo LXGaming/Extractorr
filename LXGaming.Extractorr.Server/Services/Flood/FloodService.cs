@@ -165,12 +165,16 @@ public class FloodService : IHostedService {
                 continue;
             }
 
-            var absoluteFilePath = Path.GetFullPath(torrentContent.Path, absoluteDirectoryPath);
-            if (!File.Exists(absoluteFilePath)) {
-                throw new InvalidOperationException($"{absoluteFilePath} does not exist");
+            var absolutePath = Path.GetFullPath(torrentContent.Path, absoluteDirectoryPath);
+            if (!File.Exists(absolutePath)) {
+                if (!Directory.Exists(absolutePath)) {
+                    throw new InvalidOperationException($"{absolutePath} does not exist");
+                }
+
+                continue;
             }
 
-            files.Add(absoluteFilePath);
+            files.Add(absolutePath);
         }
 
         return files;
