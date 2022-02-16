@@ -17,6 +17,7 @@ Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .MinimumLevel.Override("Quartz", LogEventLevel.Information)
+    .MinimumLevel.Override("Quartz.Core.ErrorLogger", LogEventLevel.Fatal)
     .Enrich.FromLogContext()
     .WriteTo.Console()
     .WriteTo.File(
