@@ -205,7 +205,7 @@ public class FloodService : IHostedService {
     }
 
     private async void OnGrabAsync(object? sender, GrabEventArgs eventArgs) {
-        var torrentProperties = await GetTorrentAsync(eventArgs.Id);
+        var torrentProperties = await EnsureAuthenticatedAsync(GetTorrentAsync(eventArgs.Id));
         if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Hash)) {
             _logger.LogWarning("Invalid Grab: {Id} does not exist", eventArgs.Id);
             return;
@@ -226,7 +226,7 @@ public class FloodService : IHostedService {
             return;
         }
 
-        var torrentProperties = await GetTorrentAsync(eventArgs.Id);
+        var torrentProperties = await EnsureAuthenticatedAsync(GetTorrentAsync(eventArgs.Id));
         if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Directory)) {
             _logger.LogWarning("Invalid Import: {Id} does not exist", eventArgs.Id);
             return;
