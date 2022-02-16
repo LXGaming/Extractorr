@@ -65,7 +65,7 @@ public class FloodService : IHostedService {
                 _logger.LogInformation("Connected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
                 break;
             } catch (HttpRequestException ex) {
-                if (ex is { StatusCode: HttpStatusCode.Forbidden }) {
+                if (ex is { StatusCode: HttpStatusCode.Unauthorized }) {
                     throw;
                 }
 
@@ -93,7 +93,7 @@ public class FloodService : IHostedService {
         try {
             return await task;
         } catch (HttpRequestException ex) {
-            if (ex is not { StatusCode: HttpStatusCode.Forbidden }) {
+            if (ex is not { StatusCode: HttpStatusCode.Unauthorized }) {
                 throw;
             }
         }
