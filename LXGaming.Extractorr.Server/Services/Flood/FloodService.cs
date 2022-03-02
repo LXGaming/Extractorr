@@ -89,7 +89,7 @@ public class FloodService : IHostedService {
         return Task.CompletedTask;
     }
 
-    public async Task<T?> EnsureAuthenticatedAsync<T>(Task<T> task) {
+    public async Task<T> EnsureAuthenticatedAsync<T>(Task<T> task) {
         try {
             return await task;
         } catch (HttpRequestException ex) {
@@ -99,8 +99,10 @@ public class FloodService : IHostedService {
         }
 
         var authenticate = await AuthenticateAsync(Options.Username ?? "", Options.Password ?? "");
-        if (authenticate is not { Success: true }) {
-            return default;
+        if (authenticate is { Success: true }) {
+            _logger.LogInformation("Reconnected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
+        } else {
+            _logger.LogWarning("Reconnection failed!");
         }
 
         return await task;
