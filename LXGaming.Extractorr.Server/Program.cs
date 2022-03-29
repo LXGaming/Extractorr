@@ -77,7 +77,7 @@ try {
         endpoints.MapHealthChecks("/health").RequireHost("127.0.0.1");
     });
 
-    app.Run();
+    await app.RunAsync();
 } catch (Exception ex) {
     Log.Fatal(ex, "Application failed to initialize");
 } finally {
