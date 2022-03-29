@@ -38,7 +38,6 @@ try {
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
     builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddHealthChecks();
 
     builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quartz"));
