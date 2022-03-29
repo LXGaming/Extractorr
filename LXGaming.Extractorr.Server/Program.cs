@@ -78,8 +78,10 @@ try {
     });
 
     await app.RunAsync();
+    return 0;
 } catch (Exception ex) {
     Log.Fatal(ex, "Application failed to initialize");
+    return 1;
 } finally {
     Log.CloseAndFlush();
 }
