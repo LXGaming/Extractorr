@@ -15,7 +15,7 @@ public class FloodJob : IJob {
     private readonly FloodService _floodService;
     private readonly ILogger<FloodJob> _logger;
 
-    public FloodJob(ExtractionService extractionService, FloodService floodService,  ILogger<FloodJob> logger) {
+    public FloodJob(ExtractionService extractionService, FloodService floodService, ILogger<FloodJob> logger) {
         _extractionService = extractionService;
         _floodService = floodService;
         _logger = logger;
