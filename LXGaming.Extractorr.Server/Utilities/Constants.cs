@@ -1,4 +1,6 @@
-﻿namespace LXGaming.Extractorr.Server.Utilities;
+﻿using System.Reflection;
+
+namespace LXGaming.Extractorr.Server.Utilities;
 
 public static class Constants {
 
@@ -6,11 +8,12 @@ public static class Constants {
 
         public const string Id = "extractorr";
         public const string Name = "Extractorr";
-        public const string Version = "1.0.12";
         public const string Authors = "LX_Gaming";
         public const string Source = "https://github.com/LXGaming/Extractorr";
         public const string Website = "https://lxgaming.github.io/";
-        public const string UserAgent = Name + "/" + Version + " (+" + Website + ")";
+
+        public static readonly string Version = Toolbox.GetAssemblyVersion(Assembly.GetExecutingAssembly());
+        public static readonly string UserAgent = Name + "/" + Version + " (+" + Website + ")";
     }
 
     public static class AuthenticationSchemes {

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 
 namespace LXGaming.Extractorr.Server.Utilities;
 
@@ -14,6 +15,12 @@ public static class Toolbox {
         return Path.EndsInDirectorySeparator(path) ? path : path + Path.DirectorySeparatorChar;
     }
 
+    public static string GetAssemblyVersion(Assembly assembly) {
+        return (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
+                ?? assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version
+                ?? "null").Split('+', '-')[0];
+    }
+    
     public static string GetFullDirectoryPath(string path) {
         var fullPath = Path.GetFullPath(path);
         return AppendEndingDirectorySeparator(path);
