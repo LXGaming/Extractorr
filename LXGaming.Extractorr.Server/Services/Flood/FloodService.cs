@@ -218,7 +218,7 @@ public class FloodService : IHostedService {
 
         _logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", torrentProperties.Name, torrentProperties.Hash, string.Join(", ", tags));
         await SetTorrentTagsAsync(new SetTorrentsTagsOptions {
-            Hashes = new List<string> { torrentProperties.Hash },
+            Hashes = { torrentProperties.Hash },
             Tags = tags
         });
     }
