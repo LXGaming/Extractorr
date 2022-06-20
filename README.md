@@ -1,7 +1,7 @@
 # Extractorr
 
-[![License](https://lxgaming.github.io/badges/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Docker Pulls](https://img.shields.io/docker/pulls/lxgaming/extractorr)](https://hub.docker.com/r/lxgaming/extractorr)
+[![License](https://img.shields.io/github/license/LXGaming/Extractorr?label=License&cacheSeconds=86400)](https://github.com/LXGaming/Extractorr/blob/main/LICENSE)
+[![Docker Hub](https://img.shields.io/docker/v/lxgaming/extractorr/latest?label=Docker%20Hub)](https://hub.docker.com/r/lxgaming/extractorr)
 
 Extractorr is a file extraction program for [Radarr](https://github.com/Radarr/Radarr) and [Sonarr](https://github.com/Sonarr/Sonarr).
 It extracts files by monitoring [Flood](https://github.com/jesec/flood) for completed torrents tagged with `extractorr` 
@@ -60,4 +60,4 @@ services:
 ```
 
 ## License
-Extractorr is licensed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
+Extractorr is licensed under the [Apache 2.0](https://github.com/LXGaming/Extractorr/blob/main/LICENSE) license.
