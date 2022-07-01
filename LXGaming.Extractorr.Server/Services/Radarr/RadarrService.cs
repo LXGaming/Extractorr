@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
+using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Radarr.Models;
 using LXGaming.Extractorr.Server.Utilities;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr;
 
+[Service(ServiceLifetime.Singleton)]
 public class RadarrService : IHostedService {
 
     public readonly RadarrOptions Options;

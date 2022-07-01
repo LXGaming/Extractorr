@@ -1,8 +1,10 @@
-﻿using LXGaming.Extractorr.Server.Utilities;
+﻿using LXGaming.Common.Hosting;
+using LXGaming.Extractorr.Server.Utilities;
 using SharpCompress.Archives;
 
 namespace LXGaming.Extractorr.Server.Services.Extraction;
 
+[Service(ServiceLifetime.Singleton)]
 public class ExtractionService : IHostedService {
 
     private readonly ExtractionOptions _options;

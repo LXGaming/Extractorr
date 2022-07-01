@@ -1,11 +1,7 @@
 using System.IO.Compression;
 using System.Net;
-using LXGaming.Extractorr.Server.Services.Event;
-using LXGaming.Extractorr.Server.Services.Extraction;
-using LXGaming.Extractorr.Server.Services.Flood;
-using LXGaming.Extractorr.Server.Services.Radarr;
-using LXGaming.Extractorr.Server.Services.Sonarr;
-using LXGaming.Extractorr.Server.Utilities;
+using System.Reflection;
+using LXGaming.Common.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Quartz;
 using Serilog;
@@ -44,11 +40,7 @@ try {
     builder.Services.AddQuartz(configurator => configurator.UseMicrosoftDependencyInjectionJobFactory());
     builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
-    builder.Services.AddService<EventService>();
-    builder.Services.AddService<ExtractionService>();
-    builder.Services.AddService<FloodService>();
-    builder.Services.AddService<RadarrService>();
-    builder.Services.AddService<SonarrService>();
+    builder.Services.AddAllServices(Assembly.GetExecutingAssembly());
 
     builder.Services.Configure<ForwardedHeadersOptions>(options => {
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;

@@ -1,10 +1,12 @@
 ﻿using System.Text.Json;
+using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Sonarr.Models;
 using LXGaming.Extractorr.Server.Utilities;
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr;
 
+[Service(ServiceLifetime.Singleton)]
 public class SonarrService : IHostedService {
 
     public readonly SonarrOptions Options;

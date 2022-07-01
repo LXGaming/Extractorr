@@ -4,13 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LXGaming.Extractorr.Server.Utilities;
 
 public static class Extensions {
-
-    public static IServiceCollection AddService<THostedService>(this IServiceCollection services) where THostedService : class, IHostedService {
-        return services
-            .AddSingleton<THostedService>()
-            .AddHostedService(provider => provider.GetRequiredService<THostedService>());
-    }
-
+    
     public static IActionResult Unauthorized(this HttpContext context, string authenticationScheme) {
         context.Response.Headers["WWW-Authenticate"] = authenticationScheme;
         return new UnauthorizedResult();

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
+using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.Extraction;
@@ -11,6 +12,7 @@ using Quartz;
 
 namespace LXGaming.Extractorr.Server.Services.Flood;
 
+[Service(ServiceLifetime.Singleton)]
 public class FloodService : IHostedService {
 
     private const uint DefaultReconnectDelay = 2;

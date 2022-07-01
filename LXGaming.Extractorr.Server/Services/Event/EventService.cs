@@ -1,7 +1,9 @@
-﻿using LXGaming.Extractorr.Server.Services.Event.Models;
+﻿using LXGaming.Common.Hosting;
+using LXGaming.Extractorr.Server.Services.Event.Models;
 
 namespace LXGaming.Extractorr.Server.Services.Event;
 
+[Service(ServiceLifetime.Singleton)]
 public class EventService : IHostedService {
 
     public event EventHandler<GrabEventArgs>? Grab;
