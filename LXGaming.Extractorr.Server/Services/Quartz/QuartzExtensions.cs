@@ -1,6 +1,6 @@
 ﻿using Quartz;
 
-namespace LXGaming.Extractorr.Server.Utilities.Quartz;
+namespace LXGaming.Extractorr.Server.Services.Quartz;
 
 public static class QuartzExtensions {
 
@@ -16,7 +16,7 @@ public static class QuartzExtensions {
 
     public static Task<DateTimeOffset> ScheduleJobAsync<T>(this IScheduler scheduler, ITrigger trigger) where T : IJob {
         var key = JobKey.Create(Guid.NewGuid().ToString());
-        return ScheduleJobAsync<T>(scheduler, key, trigger);
+        return scheduler.ScheduleJobAsync<T>(key, trigger);
     }
 
     public static Task<DateTimeOffset> ScheduleJobAsync<T>(this IScheduler scheduler, JobKey key, ITrigger trigger) where T : IJob {

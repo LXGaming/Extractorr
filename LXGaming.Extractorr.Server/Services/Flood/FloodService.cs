@@ -6,8 +6,8 @@ using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood.Models;
+using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Utilities;
-using LXGaming.Extractorr.Server.Utilities.Quartz;
 using Quartz;
 
 namespace LXGaming.Extractorr.Server.Services.Flood;
