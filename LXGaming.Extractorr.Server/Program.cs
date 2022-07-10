@@ -2,6 +2,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Reflection;
 using LXGaming.Common.Hosting;
+using LXGaming.Common.Serilog;
 using Microsoft.AspNetCore.HttpOverrides;
 using Quartz;
 using Serilog;
@@ -9,7 +10,7 @@ using Serilog.Events;
 using Serilog.Sinks.File.Archive;
 
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Debug()
+    .MinimumLevel.ControlledBy(new EnvironmentLoggingLevelSwitch(LogEventLevel.Verbose, LogEventLevel.Debug))
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
     .MinimumLevel.Override("Quartz", LogEventLevel.Information)
