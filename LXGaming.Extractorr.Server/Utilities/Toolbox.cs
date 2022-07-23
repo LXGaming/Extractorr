@@ -20,7 +20,7 @@ public static class Toolbox {
                 ?? assembly.GetCustomAttribute<AssemblyVersionAttribute>()?.Version
                 ?? "null").Split('+', '-')[0];
     }
-    
+
     public static string GetFullDirectoryPath(string path) {
         var fullPath = Path.GetFullPath(path);
         return AppendEndingDirectorySeparator(path);
