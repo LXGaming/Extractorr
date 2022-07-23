@@ -6,7 +6,8 @@ using Quartz;
 
 namespace LXGaming.Extractorr.Server.Services.Flood;
 
-[DisallowConcurrentExecution, PersistJobDataAfterExecution]
+[DisallowConcurrentExecution]
+[PersistJobDataAfterExecution]
 public class FloodJob : IJob {
 
     public const string TorrentsKey = "torrents";
