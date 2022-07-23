@@ -91,9 +91,9 @@ public class FloodService : IHostedService {
         return Task.CompletedTask;
     }
 
-    public async Task<T> EnsureAuthenticatedAsync<T>(Task<T> task) {
+    public async Task<T> EnsureAuthenticatedAsync<T>(Func<Task<T>> task) {
         try {
-            return await task;
+            return await task();
         } catch (HttpRequestException ex) {
             if (ex is not { StatusCode: HttpStatusCode.Unauthorized }) {
                 throw;
@@ -107,7 +107,7 @@ public class FloodService : IHostedService {
             _logger.LogWarning("Reconnection failed!");
         }
 
-        return await task;
+        return await task();
     }
 
     public async Task<Authenticate?> AuthenticateAsync(string username, string password) {
@@ -209,7 +209,7 @@ public class FloodService : IHostedService {
     }
 
     private async void OnGrabAsync(object? sender, GrabEventArgs eventArgs) {
-        var torrentProperties = await EnsureAuthenticatedAsync(GetTorrentAsync(eventArgs.Id));
+        var torrentProperties = await EnsureAuthenticatedAsync(() => GetTorrentAsync(eventArgs.Id));
         if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Hash)) {
             _logger.LogWarning("Invalid Grab: {Id} does not exist", eventArgs.Id);
             return;
@@ -230,7 +230,7 @@ public class FloodService : IHostedService {
             return;
         }
 
-        var torrentProperties = await EnsureAuthenticatedAsync(GetTorrentAsync(eventArgs.Id));
+        var torrentProperties = await EnsureAuthenticatedAsync(() => GetTorrentAsync(eventArgs.Id));
         if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Directory)) {
             _logger.LogWarning("Invalid Import: {Id} does not exist", eventArgs.Id);
             return;
