@@ -38,7 +38,7 @@ try {
     builder.Services.AddHealthChecks();
 
     builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quartz"));
-    builder.Services.AddQuartz(configurator => configurator.UseMicrosoftDependencyInjectionJobFactory());
+    builder.Services.AddQuartz();
     builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
     builder.Services.AddAllServices(Assembly.GetExecutingAssembly());
@@ -47,7 +47,7 @@ try {
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
         builder.Configuration
             .GetSection("ForwardedHeaders:KnownProxies")
-            .Get<List<string>>()
+            .Get<List<string>>()?
             .Select(IPAddress.Parse)
             .ToList()
             .ForEach(options.KnownProxies.Add);
@@ -65,10 +65,8 @@ try {
 
     app.UseAuthorization();
 
-    app.UseEndpoints(endpoints => {
-        endpoints.MapControllers();
-        endpoints.MapHealthChecks("/health").RequireHost("127.0.0.1");
-    });
+    app.MapControllers();
+    app.MapHealthChecks("/health").RequireHost("127.0.0.1");
 
     await app.RunAsync();
     return 0;

@@ -11,7 +11,7 @@ public static class Extensions {
     }
 
     public static bool VerifyBasicAuthentication(this HttpRequest request, string? username, string? password) {
-        string authorization = request.Headers.Authorization;
+        string? authorization = request.Headers.Authorization;
         if (string.IsNullOrEmpty(authorization) || !authorization.StartsWith(Constants.AuthenticationSchemes.Basic, StringComparison.OrdinalIgnoreCase)) {
             return false;
         }

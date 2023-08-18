@@ -25,7 +25,8 @@ public class FloodService : IHostedService {
     private HttpClient? _httpClient;
 
     public FloodService(IConfiguration configuration, EventService eventService, ExtractionService extractionService, ILogger<FloodService> logger, ISchedulerFactory schedulerFactory) {
-        Options = configuration.GetSection(FloodOptions.Key).Get<FloodOptions>();
+        Options = configuration.GetSection(FloodOptions.Key).Get<FloodOptions>()
+                  ?? throw new InvalidOperationException("FloodOptions is unavailable");
         _eventService = eventService;
         _extractionService = extractionService;
         _logger = logger;

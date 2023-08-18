@@ -11,7 +11,8 @@ public class ExtractionService : IHostedService {
     private readonly ILogger<ExtractionService> _logger;
 
     public ExtractionService(IConfiguration configuration, ILogger<ExtractionService> logger) {
-        _options = configuration.GetSection(ExtractionOptions.Key).Get<ExtractionOptions>();
+        _options = configuration.GetSection(ExtractionOptions.Key).Get<ExtractionOptions>()
+                   ?? throw new InvalidOperationException("ExtractionOptions is unavailable");
         _logger = logger;
     }
 

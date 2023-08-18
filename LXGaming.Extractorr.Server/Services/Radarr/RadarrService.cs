@@ -14,7 +14,8 @@ public class RadarrService : IHostedService {
     private readonly ILogger<RadarrService> _logger;
 
     public RadarrService(IConfiguration configuration, EventService eventService, ILogger<RadarrService> logger) {
-        Options = configuration.GetSection(RadarrOptions.Key).Get<RadarrOptions>();
+        Options = configuration.GetSection(RadarrOptions.Key).Get<RadarrOptions>()
+                  ?? throw new InvalidOperationException("RadarrOptions is unavailable");
         _eventService = eventService;
         _logger = logger;
     }

@@ -14,7 +14,8 @@ public class SonarrService : IHostedService {
     private readonly ILogger<SonarrService> _logger;
 
     public SonarrService(IConfiguration configuration, EventService eventService, ILogger<SonarrService> logger) {
-        Options = configuration.GetSection(SonarrOptions.Key).Get<SonarrOptions>();
+        Options = configuration.GetSection(SonarrOptions.Key).Get<SonarrOptions>()
+                  ?? throw new InvalidOperationException("SonarrOptions is unavailable");
         _eventService = eventService;
         _logger = logger;
     }
