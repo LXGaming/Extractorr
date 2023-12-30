@@ -25,7 +25,7 @@ services:
       - TZ=Pacific/Auckland
     image: lxgaming/extractorr:latest
     ports:
-      - 80:80
+     - 8080:8080
     restart: unless-stopped
     volumes:
       - /path/to/downloads:/path/to/downloads
@@ -53,7 +53,7 @@ services:
       - TZ=Pacific/Auckland
     image: lxgaming/extractorr:latest
     ports:
-      - 80:80
+     - 8080:8080
     restart: unless-stopped
     volumes:
       - /path/to/downloads:/path/to/downloads

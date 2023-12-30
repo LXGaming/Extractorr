@@ -24,5 +24,5 @@ FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine
 RUN apk add --no-cache tzdata
 WORKDIR /app
 COPY --from=build /app ./
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["./LXGaming.Extractorr.Server"]
