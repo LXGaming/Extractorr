@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
-public class EpisodeFile {
+public record EpisodeFile {
 
     [JsonPropertyName("id")]
     public int Id { get; set; }

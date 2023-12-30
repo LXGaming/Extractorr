@@ -13,39 +13,34 @@ using Quartz;
 namespace LXGaming.Extractorr.Server.Services.Flood;
 
 [Service(ServiceLifetime.Singleton)]
-public class FloodService : IHostedService {
+public class FloodService(
+    IConfiguration configuration,
+    EventService eventService,
+    ExtractionService extractionService,
+    ILogger<FloodService> logger,
+    ISchedulerFactory schedulerFactory) : IHostedService {
 
     private const uint DefaultReconnectDelay = 2;
     private const uint DefaultMaximumReconnectDelay = 300; // 5 Minutes
-    public readonly FloodOptions Options;
-    private readonly EventService _eventService;
-    private readonly ExtractionService _extractionService;
-    private readonly ILogger<FloodService> _logger;
-    private readonly ISchedulerFactory _schedulerFactory;
-    private HttpClient? _httpClient;
 
-    public FloodService(IConfiguration configuration, EventService eventService, ExtractionService extractionService, ILogger<FloodService> logger, ISchedulerFactory schedulerFactory) {
-        Options = configuration.GetSection(FloodOptions.Key).Get<FloodOptions>()
-                  ?? throw new InvalidOperationException("FloodOptions is unavailable");
-        _eventService = eventService;
-        _extractionService = extractionService;
-        _logger = logger;
-        _schedulerFactory = schedulerFactory;
-    }
+    public readonly FloodOptions Options = configuration.GetSection(FloodOptions.Key).Get<FloodOptions>()
+                                           ?? throw new InvalidOperationException("FloodOptions is unavailable");
+
+    private HttpClient? _httpClient;
 
     public async Task StartAsync(CancellationToken cancellationToken) {
         if (string.IsNullOrEmpty(Options.Address)) {
-            _logger.LogWarning("Flood address has not been configured");
+            logger.LogWarning("Flood address has not been configured");
             return;
         }
 
         if (string.IsNullOrEmpty(Options.Username) || string.IsNullOrEmpty(Options.Password)) {
-            _logger.LogWarning("Flood credentials have not been configured");
+            logger.LogWarning("Flood credentials have not been configured");
             return;
         }
 
         if (string.IsNullOrEmpty(Options.Schedule)) {
-            _logger.LogWarning("Flood schedule has not been configured");
+            logger.LogWarning("Flood schedule has not been configured");
             return;
         }
 
@@ -61,11 +56,11 @@ public class FloodService : IHostedService {
             try {
                 var authenticate = await AuthenticateAsync(Options.Username, Options.Password);
                 if (authenticate is not { Success: true }) {
-                    _logger.LogWarning("Flood authentication failed");
+                    logger.LogWarning("Flood authentication failed");
                     return;
                 }
 
-                _logger.LogInformation("Connected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
+                logger.LogInformation("Connected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
                 break;
             } catch (HttpRequestException ex) {
                 if (ex is { StatusCode: HttpStatusCode.Unauthorized }) {
@@ -75,16 +70,16 @@ public class FloodService : IHostedService {
                 var delay = TimeSpan.FromSeconds(reconnectDelay);
                 reconnectDelay = Math.Min(reconnectDelay << 1, DefaultMaximumReconnectDelay);
 
-                _logger.LogWarning("Connection failed! Next attempt in {Delay}: {Message}", delay, ex.Message);
+                logger.LogWarning("Connection failed! Next attempt in {Delay}: {Message}", delay, ex.Message);
                 await Task.Delay(delay, cancellationToken);
             }
         }
 
-        var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
+        var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         await scheduler.ScheduleJobAsync<FloodJob>(FloodJob.JobKey, TriggerBuilder.Create().WithCronSchedule(Options.Schedule).Build());
 
-        _eventService.Grab += OnGrabAsync;
-        _eventService.Import += OnImportAsync;
+        eventService.Grab += OnGrabAsync;
+        eventService.Import += OnImportAsync;
     }
 
     public Task StopAsync(CancellationToken cancellationToken) {
@@ -103,9 +98,9 @@ public class FloodService : IHostedService {
 
         var authenticate = await AuthenticateAsync(Options.Username ?? "", Options.Password ?? "");
         if (authenticate is { Success: true }) {
-            _logger.LogInformation("Reconnected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
+            logger.LogInformation("Reconnected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
         } else {
-            _logger.LogWarning("Reconnection failed!");
+            logger.LogWarning("Reconnection failed!");
         }
 
         return await task();
@@ -116,16 +111,17 @@ public class FloodService : IHostedService {
             throw new InvalidOperationException("HttpClient is unavailable");
         }
 
+        // ReSharper disable once UsingStatementResourceInitialization
         using var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/authenticate") {
             Content = new FormUrlEncodedContent(new Dictionary<string, string> {
-                {"username", username},
-                {"password", password}
+                { "username", username },
+                { "password", password }
             })
         };
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         await using var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<Authenticate>(stream, Toolbox.JsonSerializerOptions);
+        return await JsonSerializer.DeserializeAsync<Authenticate>(stream);
     }
 
     public async Task<TorrentProperties?> GetTorrentAsync(string hash) {
@@ -146,7 +142,7 @@ public class FloodService : IHostedService {
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         await using var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<TorrentListSummary>(stream, Toolbox.JsonSerializerOptions);
+        return await JsonSerializer.DeserializeAsync<TorrentListSummary>(stream);
     }
 
     public async Task<List<string>> GetTorrentFilesAsync(TorrentProperties torrentProperties) {
@@ -194,7 +190,7 @@ public class FloodService : IHostedService {
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         await using var stream = await response.Content.ReadAsStreamAsync();
-        return await JsonSerializer.DeserializeAsync<List<TorrentContent>>(stream, Toolbox.JsonSerializerOptions);
+        return await JsonSerializer.DeserializeAsync<List<TorrentContent>>(stream);
     }
 
     public async Task SetTorrentTagsAsync(SetTorrentsTagsOptions options) {
@@ -202,9 +198,8 @@ public class FloodService : IHostedService {
             throw new InvalidOperationException("HttpClient is unavailable");
         }
 
-        using var request = new HttpRequestMessage(HttpMethod.Patch, $"api/torrents/tags") {
-            Content = new StringContent(JsonSerializer.Serialize(options), Encoding.UTF8, "application/json")
-        };
+        using var request = new HttpRequestMessage(HttpMethod.Patch, $"api/torrents/tags");
+        request.Content = new StringContent(JsonSerializer.Serialize(options), Encoding.UTF8, "application/json");
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
     }
@@ -212,14 +207,14 @@ public class FloodService : IHostedService {
     private async void OnGrabAsync(object? sender, GrabEventArgs eventArgs) {
         var torrentProperties = await EnsureAuthenticatedAsync(() => GetTorrentAsync(eventArgs.Id));
         if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Hash)) {
-            _logger.LogWarning("Invalid Grab: {Id} does not exist", eventArgs.Id);
+            logger.LogWarning("Invalid Grab: {Id} does not exist", eventArgs.Id);
             return;
         }
 
-        var tags = torrentProperties.Tags ?? new List<string>();
+        var tags = torrentProperties.Tags ?? [];
         tags.Add(Constants.Application.Id);
 
-        _logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", torrentProperties.Name, torrentProperties.Hash, string.Join(", ", tags));
+        logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", torrentProperties.Name, torrentProperties.Hash, string.Join(", ", tags));
         await SetTorrentTagsAsync(new SetTorrentsTagsOptions {
             Hashes = { torrentProperties.Hash },
             Tags = tags
@@ -233,40 +228,40 @@ public class FloodService : IHostedService {
 
         var torrentProperties = await EnsureAuthenticatedAsync(() => GetTorrentAsync(eventArgs.Id));
         if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Directory)) {
-            _logger.LogWarning("Invalid Import: {Id} does not exist", eventArgs.Id);
+            logger.LogWarning("Invalid Import: {Id} does not exist", eventArgs.Id);
             return;
         }
 
         var absoluteDirectoryPath = Toolbox.GetFullDirectoryPath(torrentProperties.Directory);
         if (!Directory.Exists(absoluteDirectoryPath)) {
-            _logger.LogWarning("Invalid Torrent: {Directory} does not exist", absoluteDirectoryPath);
+            logger.LogWarning("Invalid Torrent: {Directory} does not exist", absoluteDirectoryPath);
             return;
         }
 
         var torrentFiles = await GetTorrentFilesAsync(torrentProperties);
-        if (!torrentFiles.Any(_extractionService.IsExtractable)) {
-            _logger.LogWarning("Invalid Torrent: {Id} has no extractable contents", eventArgs.Id);
+        if (!torrentFiles.Any(extractionService.IsExtractable)) {
+            logger.LogWarning("Invalid Torrent: {Id} has no extractable contents", eventArgs.Id);
             return;
         }
 
         foreach (var file in eventArgs.Files) {
             var absoluteFilePath = Path.GetFullPath(file);
             if (!absoluteFilePath.StartsWith(absoluteDirectoryPath)) {
-                _logger.LogWarning("Invalid Import File: {File}", absoluteFilePath);
+                logger.LogWarning("Invalid Import File: {File}", absoluteFilePath);
                 continue;
             }
 
             if (!File.Exists(absoluteFilePath)) {
-                _logger.LogWarning("Invalid Import File: {File} does not exist", absoluteFilePath);
+                logger.LogWarning("Invalid Import File: {File} does not exist", absoluteFilePath);
                 continue;
             }
 
             if (torrentFiles.Any(torrentFile => string.Equals(torrentFile, absoluteFilePath, StringComparison.OrdinalIgnoreCase))) {
-                _logger.LogWarning("Invalid Import File: {File} is part of the torrent", absoluteFilePath);
+                logger.LogWarning("Invalid Import File: {File} is part of the torrent", absoluteFilePath);
                 continue;
             }
 
-            _logger.LogInformation("Deleting Import File: {File}", absoluteFilePath);
+            logger.LogInformation("Deleting Import File: {File}", absoluteFilePath);
             File.Delete(absoluteFilePath);
         }
     }

@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-public class Import {
+public record Import {
 
     [JsonPropertyName("downloadClient")]
     public string? DownloadClient { get; set; }

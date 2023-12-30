@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
-public class Episode {
+public record Episode {
 
     [JsonPropertyName("airDate")]
     public string? AirDate { get; set; }

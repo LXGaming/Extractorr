@@ -25,7 +25,7 @@ Log.Logger = new LoggerConfiguration()
         hooks: new ArchiveHooks(CompressionLevel.Optimal))
     .CreateBootstrapLogger();
 
-Log.Information("Initializing...");
+Log.Information("Initialising...");
 
 try {
     var builder = WebApplication.CreateBuilder(args);
@@ -71,7 +71,7 @@ try {
     await app.RunAsync();
     return 0;
 } catch (Exception ex) {
-    Log.Fatal(ex, "Application failed to initialize");
+    Log.Fatal(ex, "Application failed to initialise");
     return 1;
 } finally {
     Log.CloseAndFlush();

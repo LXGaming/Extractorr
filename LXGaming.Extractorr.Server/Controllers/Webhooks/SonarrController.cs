@@ -7,22 +7,16 @@ namespace LXGaming.Extractorr.Server.Controllers.Webhooks;
 
 [ApiController]
 [Route("webhooks/sonarr")]
-public class SonarrController : ControllerBase {
-
-    private readonly SonarrService _sonarrService;
-
-    public SonarrController(SonarrService sonarrService) {
-        _sonarrService = sonarrService;
-    }
+public class SonarrController(SonarrService sonarrService) : ControllerBase {
 
     [HttpPost]
     public async Task<IActionResult> OnPostAsync() {
-        if (!Request.VerifyBasicAuthentication(_sonarrService.Options.Username, _sonarrService.Options.Password)) {
+        if (!Request.VerifyBasicAuthentication(sonarrService.Options.Username, sonarrService.Options.Password)) {
             return HttpContext.Unauthorized(Constants.AuthenticationSchemes.Basic);
         }
 
         using var document = await JsonDocument.ParseAsync(Request.Body);
-        await _sonarrService.ExecuteAsync(document);
+        await sonarrService.ExecuteAsync(document);
         return NoContent();
     }
 }

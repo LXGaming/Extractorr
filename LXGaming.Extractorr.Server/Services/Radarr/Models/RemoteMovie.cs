@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-public class RemoteMovie {
+public record RemoteMovie {
 
     [JsonPropertyName("imdbId")]
     public string? ImdbId { get; set; }

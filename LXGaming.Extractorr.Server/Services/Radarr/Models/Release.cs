@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-public class Release {
+public record Release {
 
     [JsonPropertyName("indexer")]
     public string? Indexer { get; set; }

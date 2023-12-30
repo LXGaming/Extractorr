@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Models;
 
-public class TorrentContent {
+public record TorrentContent {
 
     [JsonPropertyName("filename")]
     public string? Filename { get; set; }

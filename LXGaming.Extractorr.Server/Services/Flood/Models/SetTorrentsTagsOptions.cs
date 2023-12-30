@@ -2,11 +2,11 @@
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Models;
 
-public class SetTorrentsTagsOptions {
+public record SetTorrentsTagsOptions {
 
     [JsonPropertyName("hashes")]
-    public List<string> Hashes { get; set; } = new();
+    public List<string> Hashes { get; set; } = [];
 
     [JsonPropertyName("tags")]
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
 }

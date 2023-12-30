@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-public class Movie {
+public record Movie {
 
     [JsonPropertyName("filePath")]
     public string? FilePath { get; set; }

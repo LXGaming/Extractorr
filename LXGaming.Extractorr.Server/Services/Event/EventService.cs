@@ -8,11 +8,6 @@ public class EventService : IHostedService {
 
     public event EventHandler<GrabEventArgs>? Grab;
     public event EventHandler<ImportEventArgs>? Import;
-    private readonly ILogger<EventService> _logger;
-
-    public EventService(ILogger<EventService> logger) {
-        _logger = logger;
-    }
 
     public Task StartAsync(CancellationToken cancellationToken) {
         return Task.CompletedTask;
@@ -29,7 +24,7 @@ public class EventService : IHostedService {
     }
 
     public void OnImport(string id, string file, bool delete) {
-        OnImport(id, new List<string> { file }, delete);
+        OnImport(id, [file], delete);
     }
 
     public void OnImport(string id, List<string> files, bool delete) {
