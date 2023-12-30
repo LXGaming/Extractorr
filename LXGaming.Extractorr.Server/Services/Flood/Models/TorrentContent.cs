@@ -8,7 +8,7 @@ public record TorrentContent {
     public string? Filename { get; set; }
 
     [JsonPropertyName("index")]
-    public long Index { get; set; }
+    public int Index { get; set; }
 
     [JsonPropertyName("path")]
     public string? Path { get; set; }

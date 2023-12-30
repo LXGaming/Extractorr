@@ -50,10 +50,10 @@ public record TorrentProperties {
     public string? Name { get; set; }
 
     [JsonPropertyName("peersConnected")]
-    public long PeersConnected { get; set; }
+    public int PeersConnected { get; set; }
 
     [JsonPropertyName("peersTotal")]
-    public long PeersTotal { get; set; }
+    public int PeersTotal { get; set; }
 
     [JsonPropertyName("percentComplete")]
     public decimal PercentComplete { get; set; }
@@ -65,10 +65,10 @@ public record TorrentProperties {
     public decimal Ratio { get; set; }
 
     [JsonPropertyName("seedsConnected")]
-    public long SeedsConnected { get; set; }
+    public int SeedsConnected { get; set; }
 
     [JsonPropertyName("seedsTotal")]
-    public long SeedsTotal { get; set; }
+    public int SeedsTotal { get; set; }
 
     [JsonPropertyName("sizeBytes")]
     public long SizeBytes { get; set; }
