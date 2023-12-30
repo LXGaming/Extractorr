@@ -4,13 +4,13 @@ public class SonarrOptions {
 
     public const string Key = "Sonarr";
 
-    public string? Username { get; set; }
+    public string? Username { get; init; }
 
-    public string? Password { get; set; }
+    public string? Password { get; init; }
 
-    public bool DebugWebhooks { get; set; }
+    public bool DebugWebhooks { get; init; }
 
-    public bool DeleteOnImport { get; set; }
+    public bool DeleteOnImport { get; init; }
 
-    public Dictionary<string, string>? RemotePathMappings { get; set; }
+    public Dictionary<string, string>? RemotePathMappings { get; init; }
 }

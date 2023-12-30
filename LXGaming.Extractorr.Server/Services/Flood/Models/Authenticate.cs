@@ -5,11 +5,11 @@ namespace LXGaming.Extractorr.Server.Services.Flood.Models;
 public record Authenticate {
 
     [JsonPropertyName("level")]
-    public AccessLevel Level { get; set; }
+    public AccessLevel Level { get; init; }
 
     [JsonPropertyName("success")]
-    public bool Success { get; set; }
+    public bool Success { get; init; }
 
     [JsonPropertyName("username")]
-    public string? Username { get; set; }
+    public string? Username { get; init; }
 }

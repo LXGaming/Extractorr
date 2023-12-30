@@ -5,20 +5,20 @@ namespace LXGaming.Extractorr.Server.Services.Flood.Models;
 public record TorrentContent {
 
     [JsonPropertyName("filename")]
-    public string? Filename { get; set; }
+    public string? Filename { get; init; }
 
     [JsonPropertyName("index")]
-    public int Index { get; set; }
+    public int Index { get; init; }
 
     [JsonPropertyName("path")]
-    public string? Path { get; set; }
+    public string? Path { get; init; }
 
     [JsonPropertyName("percentComplete")]
-    public decimal? PercentComplete { get; set; }
+    public decimal? PercentComplete { get; init; }
 
     [JsonPropertyName("priority")]
-    public TorrentContentPriority Priority { get; set; }
+    public TorrentContentPriority Priority { get; init; }
 
     [JsonPropertyName("sizeBytes")]
-    public long SizeBytes { get; set; }
+    public long SizeBytes { get; init; }
 }

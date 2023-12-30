@@ -5,20 +5,20 @@ namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 public record Release {
 
     [JsonPropertyName("indexer")]
-    public string? Indexer { get; set; }
+    public string? Indexer { get; init; }
 
     [JsonPropertyName("quality")]
-    public string? Quality { get; set; }
+    public string? Quality { get; init; }
 
     [JsonPropertyName("qualityVersion")]
-    public int QualityVersion { get; set; }
+    public int QualityVersion { get; init; }
 
     [JsonPropertyName("releaseGroup")]
-    public string? ReleaseGroup { get; set; }
+    public string? ReleaseGroup { get; init; }
 
     [JsonPropertyName("releaseTitle")]
-    public string? ReleaseTitle { get; set; }
+    public string? ReleaseTitle { get; init; }
 
     [JsonPropertyName("size")]
-    public long Size { get; set; }
+    public long Size { get; init; }
 }

@@ -4,5 +4,5 @@ public class ExtractionOptions {
 
     public const string Key = "Extraction";
 
-    public List<string> Extensions { get; set; } = [];
+    public List<string> Extensions { get; init; } = [];
 }

@@ -5,8 +5,8 @@ namespace LXGaming.Extractorr.Server.Services.Flood.Models;
 public record TorrentListSummary {
 
     [JsonPropertyName("id")]
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     [JsonPropertyName("torrents")]
-    public Dictionary<string, TorrentProperties>? Torrents { get; set; }
+    public Dictionary<string, TorrentProperties>? Torrents { get; init; }
 }

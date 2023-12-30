@@ -5,17 +5,17 @@ namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 public record Grab {
 
     [JsonPropertyName("downloadClient")]
-    public string? DownloadClient { get; set; }
+    public string? DownloadClient { get; init; }
 
     [JsonPropertyName("downloadId")]
-    public string? DownloadId { get; set; }
+    public string? DownloadId { get; init; }
 
     [JsonPropertyName("movie")]
-    public Movie? Movie { get; set; }
+    public Movie? Movie { get; init; }
 
     [JsonPropertyName("release")]
-    public Release? Release { get; set; }
+    public Release? Release { get; init; }
 
     [JsonPropertyName("remoteMovie")]
-    public RemoteMovie? RemoteMovie { get; set; }
+    public RemoteMovie? RemoteMovie { get; init; }
 }
