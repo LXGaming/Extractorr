@@ -18,7 +18,7 @@ public class FloodJob(
 
     public async Task Execute(IJobExecutionContext context) {
         var torrentListSummary = await floodService.EnsureAuthenticatedAsync(floodService.GetTorrentsAsync);
-        if (torrentListSummary?.Torrents == null || torrentListSummary.Torrents.Count == 0) {
+        if (torrentListSummary.Torrents.Count == 0) {
             return;
         }
 
@@ -27,8 +27,7 @@ public class FloodJob(
 
         if (floodService.Options.SkipActiveExtraction) {
             var activeTorrents = torrentListSummary.Torrents
-                .Where(pair => pair.Value.Status != null
-                               && pair.Value.Status.Contains(TorrentStatus.Active)
+                .Where(pair => pair.Value.Status.Contains(TorrentStatus.Active)
                                && !pair.Value.Status.Contains(TorrentStatus.Complete)
                                && pair.Value.Status.Contains(TorrentStatus.Downloading))
                 .ToList();
@@ -43,7 +42,7 @@ public class FloodJob(
         }
 
         foreach (var (key, value) in torrentListSummary.Torrents) {
-            if (excludedTorrents.Contains(key) || string.IsNullOrEmpty(value.Directory) || value.Status == null || value.Tags == null) {
+            if (excludedTorrents.Contains(key) || string.IsNullOrEmpty(value.Directory)) {
                 continue;
             }
 
