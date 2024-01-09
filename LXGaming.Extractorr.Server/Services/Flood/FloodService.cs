@@ -53,7 +53,7 @@ public class FloodService(
         var reconnectDelay = DefaultReconnectDelay;
         while (true) {
             try {
-                var authenticate = await AuthenticateAsync(Options.Username, Options.Password);
+                var authenticate = await AuthenticateAsync();
                 if (authenticate is not { Success: true }) {
                     logger.LogWarning("Flood authentication failed");
                     return;
@@ -98,7 +98,7 @@ public class FloodService(
             }
         }
 
-        var authenticate = await AuthenticateAsync(Options.Username ?? "", Options.Password ?? "");
+        var authenticate = await AuthenticateAsync();
         if (authenticate is { Success: true }) {
             logger.LogInformation("Reconnected to Flood as {Username} ({Level})", authenticate.Username, authenticate.Level);
         } else {
@@ -108,16 +108,20 @@ public class FloodService(
         return await task();
     }
 
-    public async Task<Authenticate?> AuthenticateAsync(string username, string password) {
+    public async Task<Authenticate?> AuthenticateAsync() {
         if (_httpClient == null) {
             throw new InvalidOperationException("HttpClient is unavailable");
+        }
+
+        if (string.IsNullOrEmpty(Options.Username) || string.IsNullOrEmpty(Options.Password)) {
+            throw new InvalidOperationException("Flood credentials have not been configured");
         }
 
         // ReSharper disable once UsingStatementResourceInitialization
         using var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/authenticate") {
             Content = new FormUrlEncodedContent(new Dictionary<string, string> {
-                { "username", username },
-                { "password", password }
+                { "username", Options.Username },
+                { "password", Options.Password }
             })
         };
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
