@@ -9,7 +9,7 @@ RUN case "$TARGETPLATFORM" in \
         linux/arm64) RUNTIME=linux-musl-arm64 ;; \
         *) echo "Unsupported Platform: $TARGETPLATFORM"; exit 1 ;; \
     esac && \
-    dotnet restore --runtime $RUNTIME
+    dotnet restore LXGaming.Extractorr.Server --runtime $RUNTIME
 
 COPY LXGaming.Extractorr.Server/. ./LXGaming.Extractorr.Server/
 WORKDIR /src/LXGaming.Extractorr.Server

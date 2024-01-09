@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LXGaming.Extractorr.Server", "LXGaming.Extractorr.Server\LXGaming.Extractorr.Server.csproj", "{B311940D-5E82-431B-95A1-663651F131E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LXGaming.Extractorr.Tests", "LXGaming.Extractorr.Tests\LXGaming.Extractorr.Tests.csproj", "{7C95FB47-B4BE-421B-97F9-0484EBFB6361}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{B311940D-5E82-431B-95A1-663651F131E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B311940D-5E82-431B-95A1-663651F131E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B311940D-5E82-431B-95A1-663651F131E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C95FB47-B4BE-421B-97F9-0484EBFB6361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C95FB47-B4BE-421B-97F9-0484EBFB6361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C95FB47-B4BE-421B-97F9-0484EBFB6361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C95FB47-B4BE-421B-97F9-0484EBFB6361}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
