@@ -6,7 +6,6 @@ using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood.Models;
-using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Utilities;
 using Quartz;
 
@@ -76,7 +75,10 @@ public class FloodService(
         }
 
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
-        await scheduler.ScheduleJobAsync<FloodJob>(FloodJob.JobKey, TriggerBuilder.Create().WithCronSchedule(Options.Schedule).Build());
+        await scheduler.ScheduleJob(
+            JobBuilder.Create<FloodJob>().WithIdentity(FloodJob.JobKey).Build(),
+            TriggerBuilder.Create().WithCronSchedule(Options.Schedule).Build(),
+            cancellationToken);
 
         eventService.Grab += OnGrabAsync;
         eventService.Import += OnImportAsync;

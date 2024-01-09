@@ -13,14 +13,4 @@ public static class QuartzExtensions {
         context.JobDetail.JobDataMap.Put(key, value);
         return value;
     }
-
-    public static Task<DateTimeOffset> ScheduleJobAsync<T>(this IScheduler scheduler, ITrigger trigger) where T : IJob {
-        var key = JobKey.Create(Guid.NewGuid().ToString());
-        return scheduler.ScheduleJobAsync<T>(key, trigger);
-    }
-
-    public static Task<DateTimeOffset> ScheduleJobAsync<T>(this IScheduler scheduler, JobKey key, ITrigger trigger) where T : IJob {
-        var jobDetail = JobBuilder.Create<T>().WithIdentity(key).Build();
-        return scheduler.ScheduleJob(jobDetail, trigger);
-    }
 }
