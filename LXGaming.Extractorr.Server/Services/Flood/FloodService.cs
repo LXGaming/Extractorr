@@ -140,11 +140,7 @@ public class FloodService(
 
     public async Task<TorrentProperties?> GetTorrentAsync(string hash) {
         var torrentListSummary = await GetTorrentsAsync();
-        if (torrentListSummary?.Torrents?.TryGetValue(hash, out var torrentProperties) ?? false) {
-            return torrentProperties;
-        }
-
-        return null;
+        return torrentListSummary.Torrents.GetValueOrDefault(hash);
     }
 
     public async Task<TorrentListSummary> GetTorrentsAsync() {
@@ -156,6 +152,17 @@ public class FloodService(
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         return await webService.DeserializeAsync<TorrentListSummary>(response);
+    }
+
+    public async Task<List<TorrentContent>> GetTorrentContentsAsync(string hash) {
+        if (_httpClient == null) {
+            throw new InvalidOperationException("HttpClient is unavailable");
+        }
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"api/torrents/{hash}/contents");
+        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+        response.EnsureSuccessStatusCode();
+        return await webService.DeserializeAsync<List<TorrentContent>>(response);
     }
 
     public async Task<List<string>> GetTorrentFilesAsync(TorrentProperties torrentProperties) {
@@ -194,24 +201,16 @@ public class FloodService(
         return files;
     }
 
-    public async Task<List<TorrentContent>> GetTorrentContentsAsync(string hash) {
-        if (_httpClient == null) {
-            throw new InvalidOperationException("HttpClient is unavailable");
-        }
-
-        using var request = new HttpRequestMessage(HttpMethod.Get, $"api/torrents/{hash}/contents");
-        using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-        return await webService.DeserializeAsync<List<TorrentContent>>(response);
-    }
-
     public async Task SetTorrentTagsAsync(SetTorrentsTagsOptions options) {
         if (_httpClient == null) {
             throw new InvalidOperationException("HttpClient is unavailable");
         }
 
         using var request = new HttpRequestMessage(HttpMethod.Patch, $"api/torrents/tags");
-        request.Content = new StringContent(JsonSerializer.Serialize(options), Encoding.UTF8, "application/json");
+        request.Content = new StringContent(
+            JsonSerializer.Serialize(options, webService.JsonSerializerOptions),
+            Encoding.UTF8,
+            "application/json");
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
     }

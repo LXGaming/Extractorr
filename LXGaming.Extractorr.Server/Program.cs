@@ -29,19 +29,10 @@ Log.Information("Initialising...");
 
 try {
     var builder = WebApplication.CreateBuilder(args);
-
     builder.Configuration.AddEnvironmentVariables();
     builder.Host.UseSerilog();
 
-    builder.Services.AddRouting(options => options.LowercaseUrls = true);
     builder.Services.AddControllers();
-    builder.Services.AddHealthChecks();
-
-    builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quartz"));
-    builder.Services.AddQuartz();
-    builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
-    builder.Services.AddAllServices(Assembly.GetExecutingAssembly());
 
     builder.Services.Configure<ForwardedHeadersOptions>(options => {
         options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -53,6 +44,16 @@ try {
             .ForEach(options.KnownProxies.Add);
     });
 
+    builder.Services.AddHealthChecks();
+
+    builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quartz"));
+    builder.Services.AddQuartz();
+    builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+    builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
+    builder.Services.AddAllServices(Assembly.GetExecutingAssembly());
+
     var app = builder.Build();
 
     app.UseForwardedHeaders();
@@ -60,8 +61,6 @@ try {
     app.UseHttpsRedirection();
 
     app.UseSerilogRequestLogging();
-
-    app.UseRouting();
 
     app.UseAuthorization();
 
