@@ -27,7 +27,7 @@ public class SonarrService(
         return Task.CompletedTask;
     }
 
-    public Task ExecuteAsync(JsonDocument document) {
+    public Task OnWebhookAsync(JsonDocument document) {
         if (Options.DebugWebhooks) {
             logger.LogDebug("{Content}", JsonSerializer.Serialize(document));
         }

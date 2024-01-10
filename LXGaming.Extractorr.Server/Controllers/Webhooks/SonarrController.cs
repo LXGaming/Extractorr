@@ -20,7 +20,7 @@ public class SonarrController(SonarrService sonarrService) : ControllerBase {
             return BadRequest();
         }
 
-        await sonarrService.ExecuteAsync(document);
+        await sonarrService.OnWebhookAsync(document);
         return NoContent();
     }
 }

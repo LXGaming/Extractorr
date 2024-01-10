@@ -20,7 +20,7 @@ public class RadarrController(RadarrService radarrService) : ControllerBase {
             return BadRequest();
         }
 
-        await radarrService.ExecuteAsync(document);
+        await radarrService.OnWebhookAsync(document);
         return NoContent();
     }
 }
