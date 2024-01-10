@@ -11,6 +11,11 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
                                                   ?? throw new InvalidOperationException("ExtractionOptions is unavailable");
 
     public Task StartAsync(CancellationToken cancellationToken) {
+        if (_options.Extensions.Count == 0) {
+            logger.LogWarning("Extraction extensions have not been configured");
+            return Task.CompletedTask;
+        }
+
         return Task.CompletedTask;
     }
 
