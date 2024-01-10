@@ -12,7 +12,7 @@ public class WebService(IConfiguration configuration) : IHostedService {
 
     public JsonSerializerOptions JsonSerializerOptions { get; private set; } = null!;
     protected WebOptions Options { get; } = configuration.GetSection(WebOptions.Key).Get<WebOptions>()
-                                            ?? throw new InvalidOperationException("WebOptions is unavailable");
+                                            ?? new WebOptions();
 
     public virtual Task StartAsync(CancellationToken cancellationToken) {
         JsonSerializerOptions = new JsonSerializerOptions {
