@@ -2,5 +2,5 @@
 
 public class GrabEventArgs : EventArgs {
 
-    public string Id { get; init; } = string.Empty;
+    public required string Id { get; init; }
 }

@@ -4,7 +4,6 @@ using System.Text.Json;
 using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Event.Models;
-using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood.Jobs;
 using LXGaming.Extractorr.Server.Services.Flood.Models;
 using LXGaming.Extractorr.Server.Services.Web;
@@ -17,7 +16,6 @@ namespace LXGaming.Extractorr.Server.Services.Flood;
 public class FloodService(
     IConfiguration configuration,
     EventService eventService,
-    ExtractionService extractionService,
     ILogger<FloodService> logger,
     ISchedulerFactory schedulerFactory,
     WebService webService) : IHostedService {
@@ -73,6 +71,16 @@ public class FloodService(
 
         if (!string.IsNullOrEmpty(Options.Schedule)) {
             var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
+            await scheduler.AddJob(
+                JobBuilder.Create<GrabJob>().WithIdentity(GrabJob.JobKey).StoreDurably().Build(),
+                false,
+                cancellationToken);
+
+            await scheduler.AddJob(
+                JobBuilder.Create<ImportJob>().WithIdentity(ImportJob.JobKey).StoreDurably().Build(),
+                false,
+                cancellationToken);
+
             await scheduler.ScheduleJob(
                 JobBuilder.Create<FloodJob>().WithIdentity(FloodJob.JobKey).Build(),
                 TriggerBuilder.Create().WithCronSchedule(Options.Schedule).Build(),
@@ -208,65 +216,17 @@ public class FloodService(
         response.EnsureSuccessStatusCode();
     }
 
-    private async void OnGrabAsync(object? sender, GrabEventArgs eventArgs) {
-        var torrentProperties = await EnsureAuthenticatedAsync(() => GetTorrentAsync(eventArgs.Id));
-        if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Hash)) {
-            logger.LogWarning("Invalid Grab: {Id} does not exist", eventArgs.Id);
-            return;
-        }
-
-        var tags = torrentProperties.Tags ?? [];
-        tags.Add(Constants.Application.Id);
-
-        logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", torrentProperties.Name, torrentProperties.Hash, string.Join(", ", tags));
-        await SetTorrentTagsAsync(new SetTorrentsTagsOptions {
-            Hashes = { torrentProperties.Hash },
-            Tags = tags
+    private async Task OnGrabAsync(object? sender, GrabEventArgs eventArgs) {
+        var scheduler = await schedulerFactory.GetScheduler();
+        await scheduler.TriggerJob(GrabJob.JobKey, new JobDataMap {
+            { GrabJob.EventKey, eventArgs }
         });
     }
 
-    private async void OnImportAsync(object? sender, ImportEventArgs eventArgs) {
-        if (!eventArgs.Delete) {
-            return;
-        }
-
-        var torrentProperties = await EnsureAuthenticatedAsync(() => GetTorrentAsync(eventArgs.Id));
-        if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Directory)) {
-            logger.LogWarning("Invalid Import: {Id} does not exist", eventArgs.Id);
-            return;
-        }
-
-        var absoluteDirectoryPath = Toolbox.GetFullDirectoryPath(torrentProperties.Directory);
-        if (!Directory.Exists(absoluteDirectoryPath)) {
-            logger.LogWarning("Invalid Torrent: {Directory} does not exist", absoluteDirectoryPath);
-            return;
-        }
-
-        var torrentFiles = await GetTorrentFilesAsync(torrentProperties);
-        if (!torrentFiles.Any(extractionService.IsExtractable)) {
-            logger.LogWarning("Invalid Torrent: {Id} has no extractable contents", eventArgs.Id);
-            return;
-        }
-
-        foreach (var file in eventArgs.Files) {
-            var absoluteFilePath = Path.GetFullPath(file);
-            if (!absoluteFilePath.StartsWith(absoluteDirectoryPath)) {
-                logger.LogWarning("Invalid Import File: {File}", absoluteFilePath);
-                continue;
-            }
-
-            if (!File.Exists(absoluteFilePath)) {
-                logger.LogWarning("Invalid Import File: {File} does not exist", absoluteFilePath);
-                continue;
-            }
-
-            if (torrentFiles.Any(torrentFile => string.Equals(torrentFile, absoluteFilePath, StringComparison.OrdinalIgnoreCase))) {
-                logger.LogWarning("Invalid Import File: {File} is part of the torrent", absoluteFilePath);
-                continue;
-            }
-
-            logger.LogInformation("Deleting Import File: {File}", absoluteFilePath);
-            File.Delete(absoluteFilePath);
-        }
+    private async Task OnImportAsync(object? sender, ImportEventArgs eventArgs) {
+        var scheduler = await schedulerFactory.GetScheduler();
+        await scheduler.TriggerJob(ImportJob.JobKey, new JobDataMap {
+            { ImportJob.EventKey, eventArgs }
+        });
     }
 }

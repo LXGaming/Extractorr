@@ -4,34 +4,34 @@ using LXGaming.Extractorr.Server.Services.Event.Models;
 namespace LXGaming.Extractorr.Server.Services.Event;
 
 [Service(ServiceLifetime.Singleton)]
-public class EventService : IHostedService {
+public class EventService {
 
-    public event EventHandler<GrabEventArgs>? Grab;
-    public event EventHandler<ImportEventArgs>? Import;
+    public event AsyncEventHandler<GrabEventArgs>? Grab;
+    public event AsyncEventHandler<ImportEventArgs>? Import;
 
-    public Task StartAsync(CancellationToken cancellationToken) {
-        return Task.CompletedTask;
-    }
+    public Task OnGrabAsync(string id) {
+        if (Grab == null) {
+            return Task.CompletedTask;
+        }
 
-    public Task StopAsync(CancellationToken cancellationToken) {
-        return Task.CompletedTask;
-    }
-
-    public void OnGrab(string id) {
-        Task.Run(() => Grab?.Invoke(this, new GrabEventArgs {
+        return Grab(this, new GrabEventArgs {
             Id = id
-        }));
+        });
     }
 
-    public void OnImport(string id, string file, bool delete) {
-        OnImport(id, [file], delete);
+    public Task OnImportAsync(string id, string file, bool delete) {
+        return OnImportAsync(id, [file], delete);
     }
 
-    public void OnImport(string id, List<string> files, bool delete) {
-        Task.Run(() => Import?.Invoke(this, new ImportEventArgs {
+    public Task OnImportAsync(string id, List<string> files, bool delete) {
+        if (Import == null) {
+            return Task.CompletedTask;
+        }
+
+        return Import(this, new ImportEventArgs {
             Id = id,
             Files = files,
             Delete = delete
-        }));
+        });
     }
 }

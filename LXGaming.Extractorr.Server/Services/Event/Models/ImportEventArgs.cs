@@ -2,9 +2,9 @@
 
 public class ImportEventArgs : EventArgs {
 
-    public string Id { get; init; } = string.Empty;
+    public required string Id { get; init; }
 
-    public List<string> Files { get; init; } = [];
+    public required List<string> Files { get; init; }
 
-    public bool Delete { get; init; }
+    public required bool Delete { get; init; }
 }

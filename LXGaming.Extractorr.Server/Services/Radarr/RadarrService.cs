@@ -53,8 +53,7 @@ public class RadarrService(
         }
 
         logger.LogInformation("Grab {DownloadId}", grab.DownloadId);
-        eventService.OnGrab(grab.DownloadId);
-        return Task.CompletedTask;
+        return eventService.OnGrabAsync(grab.DownloadId);
     }
 
     private Task OnImportAsync(Import? import) {
@@ -78,8 +77,7 @@ public class RadarrService(
         }
 
         logger.LogInformation("Import {File} ({DownloadId})", path, import.DownloadId);
-        eventService.OnImport(import.DownloadId, path, Options.DeleteOnImport);
-        return Task.CompletedTask;
+        return eventService.OnImportAsync(import.DownloadId, path, Options.DeleteOnImport);
     }
 
     private Task OnTestAsync(Grab? grab) {
