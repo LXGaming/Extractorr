@@ -2,6 +2,7 @@
 using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Radarr.Models;
+using LXGaming.Extractorr.Server.Services.Web;
 using LXGaming.Extractorr.Server.Utilities;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr;
@@ -10,7 +11,8 @@ namespace LXGaming.Extractorr.Server.Services.Radarr;
 public class RadarrService(
     IConfiguration configuration,
     EventService eventService,
-    ILogger<RadarrService> logger) : IHostedService {
+    ILogger<RadarrService> logger,
+    WebService webService) : IHostedService {
 
     public readonly RadarrOptions Options = configuration.GetSection(RadarrOptions.Key).Get<RadarrOptions>()
                                             ?? throw new InvalidOperationException("RadarrOptions is unavailable");
@@ -32,15 +34,17 @@ public class RadarrService(
             logger.LogDebug("{Content}", JsonSerializer.Serialize(document));
         }
 
-        var eventType = document.RootElement.GetProperty("eventType").Deserialize<EventType>();
+        var eventType = document.RootElement
+            .GetProperty("eventType")
+            .Deserialize<EventType>(webService.JsonSerializerOptions);
 
         logger.LogDebug("Processing {EventType} for Radarr", eventType);
 
         return eventType switch {
-            EventType.Download => OnImportAsync(document.Deserialize<ImportPayload>()),
-            EventType.Grab => OnGrabAsync(document.Deserialize<GrabPayload>()),
-            EventType.Test => OnTestAsync(document.Deserialize<GrabPayload>()),
-            _ => OnUnknownAsync(document.Deserialize<Payload>())
+            EventType.Download => OnImportAsync(document.Deserialize<ImportPayload>(webService.JsonSerializerOptions)),
+            EventType.Grab => OnGrabAsync(document.Deserialize<GrabPayload>(webService.JsonSerializerOptions)),
+            EventType.Test => OnTestAsync(document.Deserialize<GrabPayload>(webService.JsonSerializerOptions)),
+            _ => OnUnknownAsync(document.Deserialize<Payload>(webService.JsonSerializerOptions))
         };
     }
 
