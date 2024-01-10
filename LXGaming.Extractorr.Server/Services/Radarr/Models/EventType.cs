@@ -1,16 +1,42 @@
 ﻿using System.Text.Json.Serialization;
+using LXGaming.Common.Text.Json.Serialization.Converters;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+// https://github.com/Radarr/Radarr/blob/v5.2.6.8376/src/NzbDrone.Core/Notifications/Webhook/WebhookEventType.cs
+[JsonConverter(typeof(StringEnumConverter<EventType>))]
 public enum EventType {
 
-    ApplicationUpdate,
-    Download,
+    [JsonPropertyName("Test")]
+    Test,
+
+    [JsonPropertyName("Grab")]
     Grab,
-    Health,
-    MovieDelete,
-    MovieFileDelete,
+
+    [JsonPropertyName("Download")]
+    Download,
+
+    [JsonPropertyName("Rename")]
     Rename,
-    Test
+
+    [JsonPropertyName("MovieDelete")]
+    MovieDelete,
+
+    [JsonPropertyName("MovieFileDelete")]
+    MovieFileDelete,
+
+    [JsonPropertyName("Health")]
+    Health,
+
+    [JsonPropertyName("ApplicationUpdate")]
+    ApplicationUpdate,
+
+    [JsonPropertyName("MovieAdded")]
+    MovieAdded,
+
+    [JsonPropertyName("HealthRestored")]
+    HealthRestored,
+
+    [JsonPropertyName("ManualInteractionRequired")]
+    ManualInteractionRequired
 }

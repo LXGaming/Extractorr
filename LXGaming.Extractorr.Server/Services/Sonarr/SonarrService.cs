@@ -37,56 +37,60 @@ public class SonarrService(
         logger.LogDebug("Processing {EventType} for Sonarr", eventType);
 
         return eventType switch {
-            EventType.Download => OnImportAsync(document.Deserialize<Import>()),
-            EventType.Grab => OnGrabAsync(document.Deserialize<Grab>()),
-            EventType.Test => OnTestAsync(document.Deserialize<Grab>()),
-            _ => OnUnknownAsync(eventType)
+            EventType.Download => OnImportAsync(document.Deserialize<ImportPayload>()),
+            EventType.Grab => OnGrabAsync(document.Deserialize<GrabPayload>()),
+            EventType.Test => OnTestAsync(document.Deserialize<GrabPayload>()),
+            _ => OnUnknownAsync(document.Deserialize<Payload>())
         };
     }
 
-    private Task OnGrabAsync(Grab? grab) {
-        ArgumentNullException.ThrowIfNull(grab, nameof(grab));
+    private Task OnGrabAsync(GrabPayload? payload) {
+        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
-        if (string.IsNullOrEmpty(grab.DownloadId)) {
+        if (string.IsNullOrEmpty(payload.DownloadId)) {
             logger.LogWarning("Invalid Grab: Missing DownloadId");
             return Task.CompletedTask;
         }
 
-        logger.LogInformation("Grab {DownloadId}", grab.DownloadId);
-        return eventService.OnGrabAsync(grab.DownloadId);
+        logger.LogInformation("Grab {DownloadId}", payload.DownloadId);
+        return eventService.OnGrabAsync(payload.DownloadId);
     }
 
-    private Task OnImportAsync(Import? import) {
-        ArgumentNullException.ThrowIfNull(import, nameof(import));
+    private Task OnImportAsync(ImportPayload? payload) {
+        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
 
-        if (string.IsNullOrEmpty(import.DownloadId)) {
+        if (string.IsNullOrEmpty(payload.DownloadId)) {
             logger.LogWarning("Invalid Import: Missing DownloadId");
             return Task.CompletedTask;
         }
 
-        if (import.EpisodeFile == null || string.IsNullOrEmpty(import.EpisodeFile.Path)) {
+        if (payload.EpisodeFile == null || string.IsNullOrEmpty(payload.EpisodeFile.Path)) {
             logger.LogWarning("Invalid Import: Missing EpisodeFile");
             return Task.CompletedTask;
         }
 
         var path = Options.RemotePathMappings != null
-            ? Toolbox.GetMappedPath(Options.RemotePathMappings, import.EpisodeFile.Path)
-            : import.EpisodeFile.Path;
-        if (!import.EpisodeFile.Path.Equals(path)) {
-            logger.LogInformation("Mapped {Remote} -> {Local}", import.EpisodeFile.Path, path);
+            ? Toolbox.GetMappedPath(Options.RemotePathMappings, payload.EpisodeFile.Path)
+            : payload.EpisodeFile.Path;
+        if (!payload.EpisodeFile.Path.Equals(path)) {
+            logger.LogInformation("Mapped {Remote} -> {Local}", payload.EpisodeFile.Path, path);
         }
 
-        logger.LogInformation("Import {File} ({DownloadId})", path, import.DownloadId);
-        return eventService.OnImportAsync(import.DownloadId, path, Options.DeleteOnImport);
+        logger.LogInformation("Import {File} ({DownloadId})", path, payload.DownloadId);
+        return eventService.OnImportAsync(payload.DownloadId, path, Options.DeleteOnImport);
     }
 
-    private Task OnTestAsync(Grab? grab) {
+    private Task OnTestAsync(GrabPayload? payload) {
+        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+
         logger.LogInformation("Test Successful");
         return Task.CompletedTask;
     }
 
-    private Task OnUnknownAsync(EventType eventType) {
-        logger.LogWarning("Unhandled Event Type: {EventType}", eventType);
+    private Task OnUnknownAsync(Payload? payload) {
+        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+
+        logger.LogWarning("Unhandled Event Type: {EventType}", payload.EventType);
         return Task.CompletedTask;
     }
 }
