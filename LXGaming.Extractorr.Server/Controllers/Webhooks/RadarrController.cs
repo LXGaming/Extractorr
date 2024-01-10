@@ -15,7 +15,11 @@ public class RadarrController(RadarrService radarrService) : ControllerBase {
             return HttpContext.Unauthorized(Constants.AuthenticationSchemes.Basic);
         }
 
-        using var document = await JsonDocument.ParseAsync(Request.Body);
+        using var document = await JsonSerializer.DeserializeAsync<JsonDocument>(Request.Body);
+        if (document == null) {
+            return BadRequest();
+        }
+
         await radarrService.ExecuteAsync(document);
         return NoContent();
     }

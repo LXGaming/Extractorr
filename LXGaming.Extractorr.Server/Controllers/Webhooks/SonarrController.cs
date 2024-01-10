@@ -15,7 +15,11 @@ public class SonarrController(SonarrService sonarrService) : ControllerBase {
             return HttpContext.Unauthorized(Constants.AuthenticationSchemes.Basic);
         }
 
-        using var document = await JsonDocument.ParseAsync(Request.Body);
+        using var document = await JsonSerializer.DeserializeAsync<JsonDocument>(Request.Body);
+        if (document == null) {
+            return BadRequest();
+        }
+
         await sonarrService.ExecuteAsync(document);
         return NoContent();
     }
