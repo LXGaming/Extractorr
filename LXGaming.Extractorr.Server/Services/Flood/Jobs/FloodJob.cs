@@ -4,7 +4,7 @@ using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Utilities;
 using Quartz;
 
-namespace LXGaming.Extractorr.Server.Services.Flood;
+namespace LXGaming.Extractorr.Server.Services.Flood.Jobs;
 
 [DisallowConcurrentExecution]
 [PersistJobDataAfterExecution]
