@@ -24,8 +24,8 @@ public class FloodServiceTest : ServiceTestBase {
     [OneTimeSetUp]
     public void Setup() {
         var options = Provider.GetRequiredService<IConfiguration>().GetSection(FloodOptions.Key).Get<FloodOptions>();
-        if (string.IsNullOrEmpty(options?.Username) || string.IsNullOrEmpty(options?.Password)) {
-            Assert.Ignore("Flood credentials have not been configured");
+        if (string.IsNullOrEmpty(options?.Address)) {
+            Assert.Ignore("Flood address has not been configured");
         }
     }
 
