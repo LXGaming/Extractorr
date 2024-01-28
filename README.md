@@ -21,8 +21,6 @@ version: "3"
 services:
   extractorr:
     container_name: extractorr
-    environment:
-      - TZ=Pacific/Auckland
     image: lxgaming/extractorr:latest
     ports:
      - 8080:8080
@@ -50,7 +48,6 @@ services:
       - SONARR__USERNAME=sonarr
       - SONARR__PASSWORD=password
       - SONARR__DELETEONIMPORT=true
-      - TZ=Pacific/Auckland
     image: lxgaming/extractorr:latest
     ports:
      - 8080:8080
