@@ -29,9 +29,9 @@
     <PackageReference Include="LXGaming.Common.Hosting" Version="1.8.2" />
     <PackageReference Include="LXGaming.Common.Serilog" Version="1.8.2" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.0" />
-    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.4" />
-    <PackageReference Include="SharpCompress" Version="0.35.0" />
+    <PackageReference Include="SharpCompress" Version="0.36.0" />
   </ItemGroup>
 
 </Project>
