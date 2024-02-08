@@ -1,4 +1,5 @@
-﻿using LXGaming.Extractorr.Server.Services.Extraction;
+﻿using System.Net;
+using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood.Models;
 using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Utilities;
@@ -17,7 +18,18 @@ public class FloodJob(
     public static readonly JobKey JobKey = JobKey.Create(nameof(FloodJob));
 
     public async Task Execute(IJobExecutionContext context) {
-        var torrentListSummary = await floodService.EnsureAuthenticatedAsync(floodService.GetTorrentsAsync);
+        TorrentListSummary torrentListSummary;
+        try {
+            torrentListSummary = await floodService.EnsureAuthenticatedAsync(floodService.GetTorrentsAsync);
+        } catch (HttpRequestException ex) {
+            if (ex is not { StatusCode: HttpStatusCode.InternalServerError }) {
+                throw;
+            }
+
+            logger.LogWarning("Encountered an Internal Server Error, check Flood for more details");
+            return;
+        }
+
         if (torrentListSummary.Torrents.Count == 0) {
             return;
         }
