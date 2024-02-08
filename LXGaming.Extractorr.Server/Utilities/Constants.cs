@@ -13,7 +13,7 @@ public static class Constants {
         public const string Source = "https://github.com/LXGaming/Extractorr";
         public const string Website = "https://lxgaming.github.io/";
 
-        public static readonly string Version = AssemblyUtils.GetAssemblyVersion(Assembly.GetExecutingAssembly());
+        public static readonly string Version = AssemblyUtils.GetVersion(Assembly.GetExecutingAssembly(), "Unknown");
         public static readonly string UserAgent = Name + "/" + Version + " (+" + Website + ")";
     }
 
