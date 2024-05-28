@@ -17,7 +17,6 @@ Triggers:
 ### docker-compose (Recommended)
 Download and use [appsettings.json](https://raw.githubusercontent.com/LXGaming/Extractorr/main/LXGaming.Extractorr.Server/appsettings.json)
 ```yaml
-version: "3"
 services:
   extractorr:
     container_name: extractorr
@@ -34,7 +33,6 @@ services:
 ### docker-compose
 Use environment variables
 ```yaml
-version: "3"
 services:
   extractorr:
     container_name: extractorr
