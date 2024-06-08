@@ -118,13 +118,11 @@ public class FloodService(
             throw new InvalidOperationException("HttpClient is unavailable");
         }
 
-        // ReSharper disable once UsingStatementResourceInitialization
-        using var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/authenticate") {
-            Content = new FormUrlEncodedContent(new Dictionary<string, string> {
-                { "username", Options.Username ?? "" },
-                { "password", Options.Password ?? "" }
-            })
-        };
+        using var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/authenticate");
+        request.Content = new FormUrlEncodedContent(new Dictionary<string, string> {
+            { "username", Options.Username ?? "" },
+            { "password", Options.Password ?? "" }
+        });
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         return await webService.DeserializeAsync<Authenticate>(response);
