@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Web;
+using LXGaming.Extractorr.Server.Services.Web.Utilities;
 using LXGaming.Extractorr.Tests.Services.Quartz;
 using LXGaming.Extractorr.Tests.Services.Web;
 using Microsoft.Extensions.Configuration;
@@ -39,6 +39,6 @@ public static class Extensions {
 
         return services
             .AddConfiguration()
-            .AddService<TestWebService>();
+            .AddWebService<WebService, TestWebService>();
     }
 }

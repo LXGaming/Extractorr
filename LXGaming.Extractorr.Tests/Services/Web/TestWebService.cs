@@ -1,20 +1,17 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Web;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace LXGaming.Extractorr.Tests.Services.Web;
 
-[Service(ServiceLifetime.Singleton, typeof(WebService))]
-public class TestWebService(IConfiguration configuration) : WebService(configuration) {
+public class TestWebService : WebService {
 
-    public override async Task StartAsync(CancellationToken cancellationToken) {
-        await base.StartAsync(cancellationToken);
-        JsonSerializerOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
+    public TestWebService(IConfiguration configuration, JsonSerializerOptions jsonSerializerOptions) : base(
+        configuration, jsonSerializerOptions) {
+        jsonSerializerOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
     }
 
     public override async Task<T> DeserializeAsync<T>(HttpResponseMessage response, CancellationToken cancellationToken = default) {

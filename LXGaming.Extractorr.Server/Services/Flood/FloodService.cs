@@ -34,10 +34,11 @@ public class FloodService(
             return;
         }
 
-        _httpClient = webService.CreateHttpClient(new SocketsHttpHandler {
-            CookieContainer = new CookieContainer(),
-            UseCookies = true
-        });
+        var handler = webService.CreateHandler();
+        handler.CookieContainer = new CookieContainer();
+        handler.UseCookies = true;
+
+        _httpClient = webService.CreateClient(handler);
         _httpClient.BaseAddress = new Uri(Options.Address);
 
         var reconnectDelay = DefaultReconnectDelay;

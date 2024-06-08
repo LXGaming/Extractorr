@@ -3,6 +3,7 @@ using System.Net;
 using System.Reflection;
 using LXGaming.Common.Hosting;
 using LXGaming.Common.Serilog;
+using LXGaming.Extractorr.Server.Services.Web.Utilities;
 using Quartz;
 using Serilog;
 using Serilog.Events;
@@ -55,6 +56,7 @@ try {
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
+    builder.Services.AddWebService();
     builder.Services.AddAllServices(Assembly.GetExecutingAssembly());
 
     var app = builder.Build();
