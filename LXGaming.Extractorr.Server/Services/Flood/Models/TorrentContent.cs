@@ -14,7 +14,8 @@ public record TorrentContent {
     public required string Filename { get; init; }
 
     [JsonPropertyName("percentComplete")]
-    public double PercentComplete { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    public double? PercentComplete { get; init; }
 
     [JsonPropertyName("priority")]
     public TorrentContentPriority Priority { get; init; }
