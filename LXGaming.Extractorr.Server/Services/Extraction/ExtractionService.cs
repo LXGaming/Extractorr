@@ -39,27 +39,27 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
             return true;
         }
 
-        var extractorrPath = Path.Join(path, $".{Constants.Application.Id}");
-        if (Directory.Exists(extractorrPath)) {
-            logger.LogDebug("Cleaning up existing {Path}", extractorrPath);
-            Delete(extractorrPath);
+        var extractPath = Path.Join(path, $".{Constants.Application.Id}");
+        if (Directory.Exists(extractPath)) {
+            logger.LogDebug("Cleaning up existing {Path}", extractPath);
+            Delete(extractPath);
         } else {
-            logger.LogDebug("Creating {Path}", extractorrPath);
-            Directory.CreateDirectory(extractorrPath);
+            logger.LogDebug("Creating {Path}", extractPath);
+            Directory.CreateDirectory(extractPath);
         }
 
-        foreach (var file in extractableFiles) {
-            if (!Extract(file, extractorrPath)) {
+        foreach (var extractableFile in extractableFiles) {
+            if (!Extract(extractableFile, extractPath)) {
                 break;
             }
 
-            if (!Move(extractorrPath, path)) {
+            if (!Move(extractPath, path)) {
                 break;
             }
         }
 
-        logger.LogDebug("Deleting {Path}", extractorrPath);
-        Directory.Delete(extractorrPath, true);
+        logger.LogDebug("Deleting {Path}", extractPath);
+        Directory.Delete(extractPath, true);
         return true;
     }
 
