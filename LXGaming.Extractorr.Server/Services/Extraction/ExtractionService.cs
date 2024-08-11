@@ -1,4 +1,5 @@
 ﻿using LXGaming.Common.Hosting;
+using LXGaming.Extractorr.Server.Services.Extraction.Results;
 using LXGaming.Extractorr.Server.Utilities;
 using SharpCompress.Archives;
 
@@ -48,14 +49,20 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
             Directory.CreateDirectory(extractPath);
         }
 
-        foreach (var extractableFile in extractableFiles) {
-            if (!Extract(extractableFile, extractPath)) {
-                break;
+        while (extractableFiles.Count > 0) {
+            var extractableFile = extractableFiles[0];
+            extractableFiles.RemoveAt(0);
+
+            var extractResult = Extract(extractableFile, extractPath);
+            if (extractResult.Volumes != null) {
+                extractableFiles.RemoveAll(extractResult.Volumes.Contains);
             }
 
-            if (!Move(extractPath, path)) {
-                break;
+            if (!extractResult.State) {
+                continue;
             }
+
+            Move(extractPath, path);
         }
 
         logger.LogDebug("Deleting {Path}", extractPath);
@@ -67,9 +74,19 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
         return Path.HasExtension(path) && _options.Extensions.Contains(Path.GetExtension(path));
     }
 
-    private bool Extract(string path, string destinationDirectory) {
+    private ExtractResult Extract(string path, string destinationDirectory) {
+        var volumes = new HashSet<string>();
         try {
             using var archive = ArchiveFactory.Open(path);
+            foreach (var volume in archive.Volumes) {
+                if (string.IsNullOrEmpty(volume.FileName)) {
+                    continue;
+                }
+
+                var absoluteFileName = Path.GetFullPath(volume.FileName, path);
+                volumes.Add(absoluteFileName);
+            }
+
             logger.LogDebug("Extracting {Path} ({ArchiveType})", path, archive.Type);
             foreach (var entry in archive.Entries) {
                 if (entry.IsDirectory) {
@@ -81,10 +98,10 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
                 entry.WriteToDirectory(destinationDirectory);
             }
 
-            return true;
+            return ExtractResult.FromSuccess(volumes);
         } catch (Exception ex) {
             logger.LogError(ex, "Encountered an error while extracting {Path}", path);
-            return false;
+            return ExtractResult.FromError(volumes);
         }
     }
 
@@ -108,7 +125,7 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
         return true;
     }
 
-    private void Delete(string path) {
+    private static void Delete(string path) {
         foreach (var file in Directory.EnumerateFiles(path)) {
             File.Delete(file);
         }
