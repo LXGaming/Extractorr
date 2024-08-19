@@ -22,7 +22,7 @@ services:
     container_name: extractorr
     image: lxgaming/extractorr:latest
     ports:
-     - 8080:8080
+      - 8080:8080
     restart: unless-stopped
     volumes:
       - /path/to/downloads:/path/to/downloads
@@ -48,7 +48,7 @@ services:
       - SONARR__DELETEONIMPORT=true
     image: lxgaming/extractorr:latest
     ports:
-     - 8080:8080
+      - 8080:8080
     restart: unless-stopped
     volumes:
       - /path/to/downloads:/path/to/downloads
