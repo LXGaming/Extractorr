@@ -1,6 +1,5 @@
 ﻿using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
-using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood;
 using LXGaming.Extractorr.Tests.Utilities;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +14,6 @@ public class FloodServiceTest : ServiceTestBase {
     public FloodServiceTest() {
         Services.AddService<FloodService>();
         Services.AddService<EventService>();
-        Services.AddService<ExtractionService>();
         Services.AddLogging();
         Services.AddSchedulerFactory();
         Services.AddWebService();
