@@ -18,7 +18,7 @@ public class FloodService(
     EventService eventService,
     ILogger<FloodService> logger,
     ISchedulerFactory schedulerFactory,
-    WebService webService) : IHostedService {
+    WebService webService) : IHostedService, IDisposable {
 
     private const uint DefaultReconnectDelay = 2;
     private const uint DefaultMaximumReconnectDelay = 300; // 5 Minutes
@@ -27,6 +27,7 @@ public class FloodService(
                                            ?? throw new InvalidOperationException("FloodOptions is unavailable");
 
     private HttpClient? _httpClient;
+    private bool _disposed;
 
     public async Task StartAsync(CancellationToken cancellationToken) {
         if (string.IsNullOrEmpty(Options.Address)) {
@@ -91,7 +92,6 @@ public class FloodService(
     }
 
     public Task StopAsync(CancellationToken cancellationToken) {
-        _httpClient?.Dispose();
         return Task.CompletedTask;
     }
 
@@ -221,5 +221,22 @@ public class FloodService(
         await scheduler.TriggerJob(ImportJob.JobKey, new JobDataMap {
             { ImportJob.EventKey, eventArgs }
         });
+    }
+
+    public void Dispose() {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing) {
+        if (_disposed) {
+            return;
+        }
+
+        if (disposing) {
+            _httpClient?.Dispose();
+        }
+
+        _disposed = true;
     }
 }
