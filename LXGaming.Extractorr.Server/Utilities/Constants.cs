@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Net.Http.Headers;
+using System.Reflection;
 using LXGaming.Common.Utilities;
 
 namespace LXGaming.Extractorr.Server.Utilities;
@@ -20,5 +21,10 @@ public static class Constants {
     public static class AuthenticationSchemes {
 
         public const string Basic = "Basic";
+    }
+
+    public static class MediaTypeHeaderValues {
+
+        public static readonly MediaTypeHeaderValue ApplicationJson = MediaTypeHeaderValue.Parse("application/json");
     }
 }

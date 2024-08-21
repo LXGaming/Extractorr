@@ -75,10 +75,7 @@ public class FloodJob(
 
             value.Tags.Remove(Constants.Application.Id);
             logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", value.Name, key, string.Join(", ", value.Tags));
-            await floodService.SetTorrentTagsAsync(new SetTorrentsTagsOptions {
-                Hashes = [key],
-                Tags = value.Tags
-            });
+            await floodService.SetTorrentTagsAsync([key], value.Tags);
         }
     }
 }

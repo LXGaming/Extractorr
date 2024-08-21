@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using System.Text;
-using System.Text.Json;
 using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Event.Models;
@@ -195,16 +193,16 @@ public class FloodService(
         return files;
     }
 
-    public async Task SetTorrentTagsAsync(SetTorrentsTagsOptions options) {
+    public async Task SetTorrentTagsAsync(IEnumerable<string> hashes, IEnumerable<string> tags) {
         if (_httpClient == null) {
             throw new InvalidOperationException("HttpClient is unavailable");
         }
 
-        using var request = new HttpRequestMessage(HttpMethod.Patch, $"api/torrents/tags");
-        request.Content = new StringContent(
-            JsonSerializer.Serialize(options, webService.JsonSerializerOptions),
-            Encoding.UTF8,
-            "application/json");
+        using var request = new HttpRequestMessage(HttpMethod.Patch, "api/torrents/tags");
+        request.Content = JsonContent.Create(new Dictionary<string, object> {
+            { "hashes", hashes },
+            { "tags", tags },
+        }, Constants.MediaTypeHeaderValues.ApplicationJson, webService.JsonSerializerOptions);
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
     }

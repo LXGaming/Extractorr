@@ -1,5 +1,4 @@
 ﻿using LXGaming.Extractorr.Server.Services.Event.Models;
-using LXGaming.Extractorr.Server.Services.Flood.Models;
 using LXGaming.Extractorr.Server.Utilities;
 using Quartz;
 
@@ -25,9 +24,6 @@ public class GrabJob(FloodService floodService, ILogger<ImportJob> logger) : IJo
         tags.Add(Constants.Application.Id);
 
         logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", torrentProperties.Name, torrentProperties.Hash, string.Join(", ", tags));
-        await floodService.SetTorrentTagsAsync(new SetTorrentsTagsOptions {
-            Hashes = { torrentProperties.Hash },
-            Tags = tags
-        });
+        await floodService.SetTorrentTagsAsync([torrentProperties.Hash], tags);
     }
 }
