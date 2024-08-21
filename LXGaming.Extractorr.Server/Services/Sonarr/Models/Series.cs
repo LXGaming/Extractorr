@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
-// https://github.com/Sonarr/Sonarr/blob/v4.0.0.748/src/NzbDrone.Core/Notifications/Webhook/WebhookSeries.cs
+// https://github.com/Sonarr/Sonarr/blob/1aaa9a14bc2d64cdc0d9eaac2d303b240fd2d6ea/src/NzbDrone.Core/Notifications/Webhook/WebhookSeries.cs
 public record Series {
 
     [JsonPropertyName("id")]
@@ -23,6 +23,9 @@ public record Series {
     [JsonPropertyName("tvMazeId")]
     public int? TvMazeId { get; init; }
 
+    [JsonPropertyName("tmdbId")]
+    public int? TmdbId { get; init; }
+
     [JsonPropertyName("imdbId")]
     public string? ImdbId { get; init; }
 
@@ -31,4 +34,13 @@ public record Series {
 
     [JsonPropertyName("year")]
     public int? Year { get; init; }
+
+    [JsonPropertyName("genres")]
+    public List<string>? Genres { get; init; }
+
+    [JsonPropertyName("images")]
+    public List<Image>? Images { get; init; }
+
+    [JsonPropertyName("tags")]
+    public List<string>? Tags { get; init; }
 }
