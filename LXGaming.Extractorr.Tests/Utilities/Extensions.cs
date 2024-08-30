@@ -17,7 +17,6 @@ public static class Extensions {
         }
 
         var configuration = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json")
             .AddUserSecrets(Assembly.GetExecutingAssembly())
             .Build();
 

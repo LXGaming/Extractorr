@@ -9,7 +9,7 @@ namespace LXGaming.Extractorr.Server.Services.Extraction;
 public class ExtractionService(IConfiguration configuration, ILogger<ExtractionService> logger) : IHostedService {
 
     private readonly ExtractionOptions _options = configuration.GetSection(ExtractionOptions.Key).Get<ExtractionOptions>()
-                                                  ?? throw new InvalidOperationException("ExtractionOptions is unavailable");
+                                                  ?? new ExtractionOptions();
 
     public Task StartAsync(CancellationToken cancellationToken) {
         if (_options.Extensions.Count == 0) {

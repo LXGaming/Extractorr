@@ -22,7 +22,7 @@ public class FloodService(
     private const uint DefaultMaximumReconnectDelay = 300; // 5 Minutes
 
     public readonly FloodOptions Options = configuration.GetSection(FloodOptions.Key).Get<FloodOptions>()
-                                           ?? throw new InvalidOperationException("FloodOptions is unavailable");
+                                           ?? new FloodOptions();
 
     private HttpClient? _httpClient;
     private bool _disposed;

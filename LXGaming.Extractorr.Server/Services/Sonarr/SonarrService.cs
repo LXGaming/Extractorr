@@ -15,7 +15,7 @@ public class SonarrService(
     WebService webService) : IHostedService {
 
     public readonly SonarrOptions Options = configuration.GetSection(SonarrOptions.Key).Get<SonarrOptions>()
-                                            ?? throw new InvalidOperationException("SonarrOptions is unavailable");
+                                            ?? new SonarrOptions();
 
     public Task StartAsync(CancellationToken cancellationToken) {
         if (string.IsNullOrEmpty(Options.Username) || string.IsNullOrEmpty(Options.Password)) {

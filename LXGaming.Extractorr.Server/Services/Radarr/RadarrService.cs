@@ -15,7 +15,7 @@ public class RadarrService(
     WebService webService) : IHostedService {
 
     public readonly RadarrOptions Options = configuration.GetSection(RadarrOptions.Key).Get<RadarrOptions>()
-                                            ?? throw new InvalidOperationException("RadarrOptions is unavailable");
+                                            ?? new RadarrOptions();
 
     public Task StartAsync(CancellationToken cancellationToken) {
         if (string.IsNullOrEmpty(Options.Username) || string.IsNullOrEmpty(Options.Password)) {
