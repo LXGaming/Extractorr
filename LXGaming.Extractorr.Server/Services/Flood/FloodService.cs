@@ -121,9 +121,9 @@ public class FloodService(
         }
 
         using var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/authenticate");
-        request.Content = new FormUrlEncodedContent(new Dictionary<string, string> {
-            { "username", Options.Username ?? "" },
-            { "password", Options.Password ?? "" }
+        request.Content = new FormUrlEncodedContent(new Dictionary<string, string?> {
+            { "username", Options.Username },
+            { "password", Options.Password }
         });
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
