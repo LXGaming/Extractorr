@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using System.Text.Json;
-using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Radarr;
 using LXGaming.Extractorr.Tests.Utilities;
+using LXGaming.Hosting.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 

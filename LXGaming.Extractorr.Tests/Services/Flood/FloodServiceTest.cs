@@ -1,7 +1,7 @@
-﻿using LXGaming.Common.Hosting;
-using LXGaming.Extractorr.Server.Services.Event;
+﻿using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Flood;
 using LXGaming.Extractorr.Tests.Utilities;
+using LXGaming.Hosting.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;

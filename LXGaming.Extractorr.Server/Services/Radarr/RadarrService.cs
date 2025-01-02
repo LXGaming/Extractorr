@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
-using LXGaming.Common.Hosting;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Radarr.Models;
 using LXGaming.Extractorr.Server.Services.Web;
 using LXGaming.Extractorr.Server.Utilities;
+using LXGaming.Hosting;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr;
 

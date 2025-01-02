@@ -1,6 +1,6 @@
-﻿using LXGaming.Common.Hosting;
-using LXGaming.Extractorr.Server.Services.Extraction.Results;
+﻿using LXGaming.Extractorr.Server.Services.Extraction.Results;
 using LXGaming.Extractorr.Server.Utilities;
+using LXGaming.Hosting;
 using SharpCompress.Archives;
 
 namespace LXGaming.Extractorr.Server.Services.Extraction;

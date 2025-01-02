@@ -1,5 +1,5 @@
-﻿using LXGaming.Common.Hosting;
-using LXGaming.Extractorr.Server.Services.Event.Models;
+﻿using LXGaming.Extractorr.Server.Services.Event.Models;
+using LXGaming.Hosting;
 
 namespace LXGaming.Extractorr.Server.Services.Event;
 
