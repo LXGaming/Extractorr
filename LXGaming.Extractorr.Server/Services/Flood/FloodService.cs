@@ -178,7 +178,12 @@ public class FloodService(
                 continue;
             }
 
-            var absolutePath = Path.GetFullPath(torrentContent.Path, absoluteDirectoryPath);
+            var contentPath = torrentContent.Path.TrimStart('/');
+            if (string.IsNullOrEmpty(contentPath)) {
+                continue;
+            }
+
+            var absolutePath = Path.GetFullPath(contentPath, absoluteDirectoryPath);
             if (!File.Exists(absolutePath)) {
                 if (!Directory.Exists(absolutePath)) {
                     throw new InvalidOperationException($"{absolutePath} does not exist");
