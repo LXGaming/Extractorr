@@ -31,7 +31,15 @@ public class ImportJob(ExtractionService extractionService, FloodService floodSe
             return;
         }
 
-        var torrentFiles = await floodService.GetTorrentFilesAsync(torrentProperties);
+        List<string> torrentFiles;
+        try {
+            torrentFiles = await floodService.GetTorrentFilesAsync(torrentProperties);
+        } catch (Exception ex) {
+            logger.LogError(ex, "Encountered an error while getting torrent files for {Name} ({Id})",
+                torrentProperties.Name, torrentProperties.Hash);
+            return;
+        }
+
         if (!torrentFiles.Any(extractionService.IsExtractable)) {
             logger.LogWarning("Invalid Torrent: {Id} has no extractable contents", eventArgs.Id);
             return;

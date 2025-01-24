@@ -62,7 +62,15 @@ public class FloodJob(
                 continue;
             }
 
-            var torrentFiles = await floodService.GetTorrentFilesAsync(value);
+            List<string> torrentFiles;
+            try {
+                torrentFiles = await floodService.GetTorrentFilesAsync(value);
+            } catch (Exception ex) {
+                logger.LogError(ex, "Encountered an error while getting torrent files for {Name} ({Id})",
+                    value.Name, value.Hash);
+                continue;
+            }
+
             if (torrentFiles.Any(extractionService.IsExtractable)) {
                 logger.LogDebug("Processing {Name} ({Id}) for extraction", value.Name, key);
                 if (!extractionService.Execute(value.Directory, torrentFiles)) {
