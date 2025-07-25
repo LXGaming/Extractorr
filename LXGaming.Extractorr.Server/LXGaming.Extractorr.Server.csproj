@@ -28,10 +28,10 @@
     <PackageReference Include="LXGaming.Common" Version="1.9.1" />
     <PackageReference Include="LXGaming.Common.Serilog" Version="1.9.1" />
     <PackageReference Include="LXGaming.Hosting.Generators" Version="1.2.0" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.14.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.6" />
-    <PackageReference Include="SharpCompress" Version="0.39.0" />
+    <PackageReference Include="SharpCompress" Version="0.40.0" />
   </ItemGroup>
 
 </Project>
