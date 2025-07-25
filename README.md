@@ -14,7 +14,7 @@ Triggers:
 - On Import: Torrent file is optionally deleted
 
 ## Usage
-### docker-compose (Recommended)
+### Docker Compose (Recommended)
 Download and use [appsettings.json](https://raw.githubusercontent.com/LXGaming/Extractorr/main/LXGaming.Extractorr.Server/appsettings.json)
 ```yaml
 services:
@@ -30,7 +30,7 @@ services:
       - /path/to/extractorr/appsettings.json:/app/appsettings.json:ro
 ```
 
-### docker-compose
+### Docker Compose
 Use environment variables
 ```yaml
 services:
