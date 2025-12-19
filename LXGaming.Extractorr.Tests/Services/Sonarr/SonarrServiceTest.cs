@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿using System.Text.Json;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Sonarr;
 using LXGaming.Extractorr.Tests.Utilities;
@@ -31,7 +30,7 @@ public class SonarrServiceTest : ServiceTestBase {
     public async Task DeserializeWebhookAsync(string id) {
         var fileName = $"event_{id}.json";
 
-        await using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"{ResourcePath}.{fileName}");
+        await using var stream = typeof(SonarrServiceTest).Assembly.GetManifestResourceStream($"{ResourcePath}.{fileName}");
         if (stream == null) {
             Assert.Ignore($"{fileName} is unavailable");
             return;

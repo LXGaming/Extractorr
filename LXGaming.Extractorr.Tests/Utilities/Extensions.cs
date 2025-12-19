@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using LXGaming.Extractorr.Server.Services.Web;
+﻿using LXGaming.Extractorr.Server.Services.Web;
 using LXGaming.Extractorr.Server.Services.Web.Utilities;
 using LXGaming.Extractorr.Tests.Services.Quartz;
 using LXGaming.Extractorr.Tests.Services.Web;
@@ -17,7 +16,7 @@ public static class Extensions {
         }
 
         var configuration = new ConfigurationBuilder()
-            .AddUserSecrets(Assembly.GetExecutingAssembly())
+            .AddUserSecrets(typeof(Extensions).Assembly)
             .Build();
 
         return services.AddSingleton<IConfiguration>(configuration);
