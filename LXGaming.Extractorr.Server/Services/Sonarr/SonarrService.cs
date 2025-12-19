@@ -73,9 +73,7 @@ public class SonarrService(
             return Task.CompletedTask;
         }
 
-        var path = Options.RemotePathMappings != null
-            ? Toolbox.GetMappedPath(Options.RemotePathMappings, payload.EpisodeFile.Path)
-            : payload.EpisodeFile.Path;
+        var path = Toolbox.GetMappedPath(Options.RemotePathMappings, payload.EpisodeFile.Path);
         if (!payload.EpisodeFile.Path.Equals(path)) {
             logger.LogInformation("Mapped {Remote} -> {Local}", payload.EpisodeFile.Path, path);
         }
