@@ -17,5 +17,5 @@ public enum ReleaseType {
     MultiEpisode = 2,
 
     [JsonPropertyName("seasonPack")]
-    SeasonPack  = 3
+    SeasonPack = 3
 }

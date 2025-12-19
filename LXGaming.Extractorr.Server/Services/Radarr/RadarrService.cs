@@ -49,7 +49,7 @@ public class RadarrService(
     }
 
     private Task OnGrabAsync(GrabPayload? payload) {
-        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+        ArgumentNullException.ThrowIfNull(payload);
 
         if (string.IsNullOrEmpty(payload.DownloadId)) {
             logger.LogWarning("Invalid Grab: Missing DownloadId");
@@ -61,7 +61,7 @@ public class RadarrService(
     }
 
     private Task OnImportAsync(ImportPayload? payload) {
-        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+        ArgumentNullException.ThrowIfNull(payload);
 
         if (string.IsNullOrEmpty(payload.DownloadId)) {
             logger.LogWarning("Invalid Import: Missing DownloadId");
@@ -83,14 +83,14 @@ public class RadarrService(
     }
 
     private Task OnTestAsync(GrabPayload? payload) {
-        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+        ArgumentNullException.ThrowIfNull(payload);
 
         logger.LogInformation("Test Successful");
         return Task.CompletedTask;
     }
 
     private Task OnUnknownAsync(Payload? payload) {
-        ArgumentNullException.ThrowIfNull(payload, nameof(payload));
+        ArgumentNullException.ThrowIfNull(payload);
 
         logger.LogWarning("Unhandled Event Type: {EventType}", payload.EventType);
         return Task.CompletedTask;
