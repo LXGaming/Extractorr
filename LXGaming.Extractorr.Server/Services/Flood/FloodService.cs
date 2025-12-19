@@ -236,10 +236,10 @@ public class FloodService(
             return;
         }
 
+        _disposed = true;
+
         if (disposing) {
             _httpClient?.Dispose();
         }
-
-        _disposed = true;
     }
 }
