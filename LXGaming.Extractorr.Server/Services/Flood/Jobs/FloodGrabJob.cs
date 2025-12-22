@@ -4,10 +4,10 @@ using Quartz;
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Jobs;
 
-public class GrabJob(FloodService floodService, ILogger<GrabJob> logger) : IJob {
+public class FloodGrabJob(FloodService floodService, ILogger<FloodGrabJob> logger) : IJob {
 
     public const string EventKey = "event";
-    public static readonly JobKey JobKey = JobKey.Create(nameof(GrabJob));
+    public static readonly JobKey JobKey = JobKey.Create(nameof(FloodGrabJob));
 
     public async Task Execute(IJobExecutionContext context) {
         if (context.MergedJobDataMap.Get(EventKey) is not GrabEventArgs eventArgs) {

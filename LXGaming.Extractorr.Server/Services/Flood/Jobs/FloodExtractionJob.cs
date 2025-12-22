@@ -9,13 +9,13 @@ namespace LXGaming.Extractorr.Server.Services.Flood.Jobs;
 
 [DisallowConcurrentExecution]
 [PersistJobDataAfterExecution]
-public class FloodJob(
+public class FloodExtractionJob(
     ExtractionService extractionService,
     FloodService floodService,
-    ILogger<FloodJob> logger) : IJob {
+    ILogger<FloodExtractionJob> logger) : IJob {
 
     public const string TorrentsKey = "torrents";
-    public static readonly JobKey JobKey = JobKey.Create(nameof(FloodJob));
+    public static readonly JobKey JobKey = JobKey.Create(nameof(FloodExtractionJob));
 
     public async Task Execute(IJobExecutionContext context) {
         TorrentListSummary torrentListSummary;

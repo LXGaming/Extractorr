@@ -68,17 +68,17 @@ public class FloodService(
         if (!string.IsNullOrEmpty(Options.Schedule)) {
             var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
             await scheduler.AddJob(
-                JobBuilder.Create<GrabJob>().WithIdentity(GrabJob.JobKey).StoreDurably().Build(),
+                JobBuilder.Create<FloodGrabJob>().WithIdentity(FloodGrabJob.JobKey).StoreDurably().Build(),
                 false,
                 cancellationToken);
 
             await scheduler.AddJob(
-                JobBuilder.Create<ImportJob>().WithIdentity(ImportJob.JobKey).StoreDurably().Build(),
+                JobBuilder.Create<FloodImportJob>().WithIdentity(FloodImportJob.JobKey).StoreDurably().Build(),
                 false,
                 cancellationToken);
 
             await scheduler.ScheduleJob(
-                JobBuilder.Create<FloodJob>().WithIdentity(FloodJob.JobKey).Build(),
+                JobBuilder.Create<FloodExtractionJob>().WithIdentity(FloodExtractionJob.JobKey).Build(),
                 TriggerBuilder.Create().WithCronSchedule(Options.Schedule).Build(),
                 cancellationToken);
         } else {
@@ -214,15 +214,15 @@ public class FloodService(
 
     private async Task OnGrabAsync(object? sender, GrabEventArgs eventArgs) {
         var scheduler = await schedulerFactory.GetScheduler();
-        await scheduler.TriggerJob(GrabJob.JobKey, new JobDataMap {
-            { GrabJob.EventKey, eventArgs }
+        await scheduler.TriggerJob(FloodGrabJob.JobKey, new JobDataMap {
+            { FloodGrabJob.EventKey, eventArgs }
         });
     }
 
     private async Task OnImportAsync(object? sender, ImportEventArgs eventArgs) {
         var scheduler = await schedulerFactory.GetScheduler();
-        await scheduler.TriggerJob(ImportJob.JobKey, new JobDataMap {
-            { ImportJob.EventKey, eventArgs }
+        await scheduler.TriggerJob(FloodImportJob.JobKey, new JobDataMap {
+            { FloodImportJob.EventKey, eventArgs }
         });
     }
 

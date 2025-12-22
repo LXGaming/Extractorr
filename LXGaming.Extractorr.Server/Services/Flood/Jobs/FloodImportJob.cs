@@ -5,10 +5,13 @@ using Quartz;
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Jobs;
 
-public class ImportJob(ExtractionService extractionService, FloodService floodService, ILogger<ImportJob> logger) : IJob {
+public class FloodImportJob(
+    ExtractionService extractionService,
+    FloodService floodService,
+    ILogger<FloodImportJob> logger) : IJob {
 
     public const string EventKey = "event";
-    public static readonly JobKey JobKey = JobKey.Create(nameof(ImportJob));
+    public static readonly JobKey JobKey = JobKey.Create(nameof(FloodImportJob));
 
     public async Task Execute(IJobExecutionContext context) {
         if (context.MergedJobDataMap.Get(EventKey) is not ImportEventArgs eventArgs) {
