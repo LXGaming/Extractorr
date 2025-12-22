@@ -162,7 +162,7 @@ public class FloodService(
             throw new InvalidOperationException("Invalid TorrentProperties");
         }
 
-        var absoluteDirectoryPath = Toolbox.GetFullDirectoryPath(torrentProperties.Directory);
+        var absoluteDirectoryPath = PathUtils.GetFullDirectoryPath(torrentProperties.Directory);
         if (!Directory.Exists(absoluteDirectoryPath)) {
             throw new InvalidOperationException($"{absoluteDirectoryPath} does not exist");
         }

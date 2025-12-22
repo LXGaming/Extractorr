@@ -1,6 +1,6 @@
 ﻿namespace LXGaming.Extractorr.Server.Utilities;
 
-public static class Toolbox {
+public static class PathUtils {
 
     public static string AppendEndingDirectorySeparator(string path) {
         return Path.EndsInDirectorySeparator(path) ? path : path + Path.DirectorySeparatorChar;

@@ -25,7 +25,7 @@ public class ImportJob(ExtractionService extractionService, FloodService floodSe
             return;
         }
 
-        var absoluteDirectoryPath = Toolbox.GetFullDirectoryPath(torrentProperties.Directory);
+        var absoluteDirectoryPath = PathUtils.GetFullDirectoryPath(torrentProperties.Directory);
         if (!Directory.Exists(absoluteDirectoryPath)) {
             logger.LogWarning("Invalid Torrent: {Directory} does not exist", absoluteDirectoryPath);
             return;

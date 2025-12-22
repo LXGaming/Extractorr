@@ -25,7 +25,7 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
     }
 
     public bool Execute(string path, IEnumerable<string> files) {
-        var absoluteDirectoryPath = Toolbox.GetFullDirectoryPath(path);
+        var absoluteDirectoryPath = PathUtils.GetFullDirectoryPath(path);
         if (!Directory.Exists(absoluteDirectoryPath)) {
             logger.LogWarning("Invalid Extraction: {Directory} does not exist", absoluteDirectoryPath);
             return false;

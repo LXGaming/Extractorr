@@ -73,7 +73,7 @@ public class RadarrService(
             return Task.CompletedTask;
         }
 
-        var path = Toolbox.GetMappedPath(Options.RemotePathMappings, payload.MovieFile.Path);
+        var path = PathUtils.GetMappedPath(Options.RemotePathMappings, payload.MovieFile.Path);
         if (!payload.MovieFile.Path.Equals(path)) {
             logger.LogInformation("Mapped {Remote} -> {Local}", payload.MovieFile.Path, path);
         }
