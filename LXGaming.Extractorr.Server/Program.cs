@@ -7,7 +7,6 @@ using Quartz;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.File.Archive;
-using IPNetwork = Microsoft.AspNetCore.HttpOverrides.IPNetwork;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.ControlledBy(new EnvironmentLoggingLevelSwitch(LogEventLevel.Verbose, LogEventLevel.Debug))
@@ -43,7 +42,7 @@ try {
         }
 
         foreach (var value in config.GetSection("KnownNetworks").Get<string[]>() ?? []) {
-            options.KnownNetworks.Add(IPNetwork.Parse(value));
+            options.KnownIPNetworks.Add(IPNetwork.Parse(value));
         }
     });
 
