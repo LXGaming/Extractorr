@@ -38,11 +38,11 @@ try {
         var config = builder.Configuration.GetSection("ForwardedHeaders");
         config.Bind(options);
 
-        foreach (var value in config.GetSection("KnownProxies").Get<string[]>() ?? Array.Empty<string>()) {
+        foreach (var value in config.GetSection("KnownProxies").Get<string[]>() ?? []) {
             options.KnownProxies.Add(IPAddress.Parse(value));
         }
 
-        foreach (var value in config.GetSection("KnownNetworks").Get<string[]>() ?? Array.Empty<string>()) {
+        foreach (var value in config.GetSection("KnownNetworks").Get<string[]>() ?? []) {
             options.KnownNetworks.Add(IPNetwork.Parse(value));
         }
     });
