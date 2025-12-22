@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-// https://github.com/Radarr/Radarr/blob/fc4f4ab21125cd3817133434acc0c10fba680930/src/NzbDrone.Core/Notifications/Webhook/WebhookRelease.cs
+// https://github.com/Radarr/Radarr/blob/4c007291833246d3ed78e6f396fc7e60cc9ca70c/src/NzbDrone.Core/Notifications/Webhook/WebhookRelease.cs
 public record Release {
 
     [JsonPropertyName("quality")]
@@ -28,6 +28,9 @@ public record Release {
 
     [JsonPropertyName("customFormats")]
     public List<string>? CustomFormats { get; init; }
+
+    [JsonPropertyName("languages")]
+    public List<Language>? Languages { get; init; }
 
     [JsonPropertyName("indexerFlags")]
     public List<string>? IndexerFlags { get; init; }

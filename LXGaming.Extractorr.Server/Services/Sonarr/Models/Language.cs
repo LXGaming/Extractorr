@@ -2,8 +2,8 @@
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
-// https://github.com/Sonarr/Sonarr/blob/52972e7efcce800560cbbaa64f5f76aaef6cbe77/src/NzbDrone.Core/Notifications/Webhook/WebhookCustomFormat.cs
-public record CustomFormat {
+// https://github.com/Sonarr/Sonarr/blob/52972e7efcce800560cbbaa64f5f76aaef6cbe77/src/NzbDrone.Core/Languages/Language.cs
+public record Language {
 
     [JsonPropertyName("id")]
     public int? Id { get; init; }

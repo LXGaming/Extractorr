@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-// https://github.com/Radarr/Radarr/blob/fc4f4ab21125cd3817133434acc0c10fba680930/src/NzbDrone.Core/Notifications/Webhook/WebhookMovie.cs
+// https://github.com/Radarr/Radarr/blob/4c007291833246d3ed78e6f396fc7e60cc9ca70c/src/NzbDrone.Core/Notifications/Webhook/WebhookMovie.cs
 public record Movie {
 
     [JsonPropertyName("id")]
@@ -40,4 +40,7 @@ public record Movie {
 
     [JsonPropertyName("tags")]
     public List<string>? Tags { get; init; }
+
+    [JsonPropertyName("originalLanguage")]
+    public Language? OriginalLanguage { get; init; }
 }

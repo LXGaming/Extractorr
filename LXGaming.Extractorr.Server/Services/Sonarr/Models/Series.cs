@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
-// https://github.com/Sonarr/Sonarr/blob/1aaa9a14bc2d64cdc0d9eaac2d303b240fd2d6ea/src/NzbDrone.Core/Notifications/Webhook/WebhookSeries.cs
+// https://github.com/Sonarr/Sonarr/blob/52972e7efcce800560cbbaa64f5f76aaef6cbe77/src/NzbDrone.Core/Notifications/Webhook/WebhookSeries.cs
 public record Series {
 
     [JsonPropertyName("id")]
@@ -43,4 +43,7 @@ public record Series {
 
     [JsonPropertyName("tags")]
     public List<string>? Tags { get; init; }
+
+    [JsonPropertyName("originalLanguage")]
+    public Language? OriginalLanguage { get; init; }
 }

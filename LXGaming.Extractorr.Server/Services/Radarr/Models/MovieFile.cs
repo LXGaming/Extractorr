@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
-// https://github.com/Radarr/Radarr/blob/fc4f4ab21125cd3817133434acc0c10fba680930/src/NzbDrone.Core/Notifications/Webhook/WebhookMovieFile.cs
+// https://github.com/Radarr/Radarr/blob/4c007291833246d3ed78e6f396fc7e60cc9ca70c/src/NzbDrone.Core/Notifications/Webhook/WebhookMovieFile.cs
 public record MovieFile {
 
     [JsonPropertyName("id")]
@@ -35,8 +35,14 @@ public record MovieFile {
     [JsonPropertyName("dateAdded")]
     public DateTime? DateAdded { get; init; }
 
+    [JsonPropertyName("languages")]
+    public List<Language>? Languages { get; init; }
+
     [JsonPropertyName("mediaInfo")]
     public MovieFileMediaInfo? MediaInfo { get; init; }
+
+    [JsonPropertyName("sourcePath")]
+    public string? SourcePath { get; init; }
 
     [JsonPropertyName("recycleBinPath")]
     public string? RecycleBinPath { get; init; }

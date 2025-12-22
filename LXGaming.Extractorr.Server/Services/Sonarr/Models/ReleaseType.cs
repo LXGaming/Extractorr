@@ -3,7 +3,7 @@ using LXGaming.Common.Text.Json.Serialization.Converters;
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
-// https://github.com/Sonarr/Sonarr/blob/1aaa9a14bc2d64cdc0d9eaac2d303b240fd2d6ea/src/NzbDrone.Core/Parser/Model/ReleaseType.cs
+// https://github.com/Sonarr/Sonarr/blob/52972e7efcce800560cbbaa64f5f76aaef6cbe77/src/NzbDrone.Core/Parser/Model/ReleaseType.cs
 [JsonConverter(typeof(StringEnumConverter<ReleaseType>))]
 public enum ReleaseType {
 

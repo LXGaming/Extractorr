@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
-// https://github.com/Sonarr/Sonarr/blob/1aaa9a14bc2d64cdc0d9eaac2d303b240fd2d6ea/src/NzbDrone.Core/Notifications/Webhook/WebhookEpisodeFile.cs
+// https://github.com/Sonarr/Sonarr/blob/52972e7efcce800560cbbaa64f5f76aaef6cbe77/src/NzbDrone.Core/Notifications/Webhook/WebhookEpisodeFile.cs
 public record EpisodeFile {
 
     [JsonPropertyName("id")]
@@ -32,8 +32,14 @@ public record EpisodeFile {
     [JsonPropertyName("dateAdded")]
     public DateTime? DateAdded { get; init; }
 
+    [JsonPropertyName("languages")]
+    public List<Language>? Languages { get; init; }
+
     [JsonPropertyName("mediaInfo")]
     public EpisodeFileMediaInfo? MediaInfo { get; init; }
+
+    [JsonPropertyName("sourcePath")]
+    public string? SourcePath { get; init; }
 
     [JsonPropertyName("recycleBinPath")]
     public string? RecycleBinPath { get; init; }
