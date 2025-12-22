@@ -1,6 +1,6 @@
 ﻿namespace LXGaming.Extractorr.Server.Services.Radarr;
 
-public class RadarrOptions {
+public sealed class RadarrOptions {
 
     public const string Key = "Radarr";
 

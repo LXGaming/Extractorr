@@ -1,6 +1,6 @@
 ﻿namespace LXGaming.Extractorr.Server.Services.Web;
 
-public class WebOptions {
+public sealed class WebOptions {
 
     public const int DefaultPooledConnectionLifetime = 300000; // 5 Minutes
     public const int DefaultTimeout = 100000; // 100 Seconds

@@ -1,6 +1,6 @@
 ﻿namespace LXGaming.Extractorr.Server.Services.Sonarr;
 
-public class SonarrOptions {
+public sealed class SonarrOptions {
 
     public const string Key = "Sonarr";
 

@@ -1,6 +1,6 @@
 ﻿namespace LXGaming.Extractorr.Server.Services.Extraction;
 
-public class ExtractionOptions {
+public sealed class ExtractionOptions {
 
     public const string Key = "Extraction";
 

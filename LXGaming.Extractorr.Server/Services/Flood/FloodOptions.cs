@@ -1,6 +1,6 @@
 ﻿namespace LXGaming.Extractorr.Server.Services.Flood;
 
-public class FloodOptions {
+public sealed class FloodOptions {
 
     public const string Key = "Flood";
 
