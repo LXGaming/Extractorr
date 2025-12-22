@@ -41,11 +41,25 @@ public class SonarrService(
         logger.LogDebug("Processing {EventType} for Sonarr", eventType);
 
         return eventType switch {
-            EventType.Download => OnImportAsync(document.Deserialize<ImportPayload>(webService.JsonSerializerOptions)),
+            EventType.Download => OnDownloadAsync(document),
             EventType.Grab => OnGrabAsync(document.Deserialize<GrabPayload>(webService.JsonSerializerOptions)),
             EventType.Test => OnTestAsync(document.Deserialize<GrabPayload>(webService.JsonSerializerOptions)),
             _ => OnUnknownAsync(document.Deserialize<Payload>(webService.JsonSerializerOptions))
         };
+    }
+
+    private Task OnDownloadAsync(JsonDocument? document) {
+        ArgumentNullException.ThrowIfNull(document);
+
+        if (document.RootElement.TryGetProperty("episodeFile", out _)) {
+            return OnImportAsync(document.Deserialize<ImportPayload>(webService.JsonSerializerOptions));
+        }
+
+        if (document.RootElement.TryGetProperty("episodeFiles", out _)) {
+            return OnImportCompleteAsync(document.Deserialize<ImportCompletePayload>(webService.JsonSerializerOptions));
+        }
+
+        return OnUnknownAsync(document.Deserialize<Payload>(webService.JsonSerializerOptions));
     }
 
     private Task OnGrabAsync(GrabPayload? payload) {
@@ -80,6 +94,42 @@ public class SonarrService(
 
         logger.LogInformation("Import {File} ({DownloadId})", path, payload.DownloadId);
         return eventService.OnImportAsync(payload.DownloadId, path, Options.DeleteOnImport);
+    }
+
+    private Task OnImportCompleteAsync(ImportCompletePayload? payload) {
+        ArgumentNullException.ThrowIfNull(payload);
+
+        if (string.IsNullOrEmpty(payload.DownloadId)) {
+            logger.LogWarning("Invalid Import Complete: Missing DownloadId");
+            return Task.CompletedTask;
+        }
+
+        if (payload.EpisodeFiles == null) {
+            logger.LogWarning("Invalid Import Complete: Missing EpisodeFiles");
+            return Task.CompletedTask;
+        }
+
+        var paths = new List<string>(payload.EpisodeFiles.Count);
+        foreach (var episodeFile in payload.EpisodeFiles) {
+            if (string.IsNullOrEmpty(episodeFile.Path)) {
+                continue;
+            }
+
+            var path = Toolbox.GetMappedPath(Options.RemotePathMappings, episodeFile.Path);
+            if (!episodeFile.Path.Equals(path)) {
+                logger.LogInformation("Mapped {Remote} -> {Local}", episodeFile.Path, path);
+            }
+
+            paths.Add(path);
+        }
+
+        if (paths.Count == 0) {
+            logger.LogWarning("Invalid Import Complete: No Paths");
+            return Task.CompletedTask;
+        }
+
+        logger.LogInformation("Import Complete {Files} ({DownloadId})", string.Join(", ", paths), payload.DownloadId);
+        return eventService.OnImportAsync(payload.DownloadId, paths, Options.DeleteOnImport);
     }
 
     private Task OnTestAsync(GrabPayload? payload) {
