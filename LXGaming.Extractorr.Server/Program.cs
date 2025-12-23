@@ -36,15 +36,15 @@ try {
     builder.Services.AddControllers();
 
     builder.Services.Configure<ForwardedHeadersOptions>(options => {
-        var config = builder.Configuration.GetSection("ForwardedHeaders");
-        options.ForwardedHeaders = config.GetValue<ForwardedHeaders>("ForwardedHeaders");
-        options.ForwardLimit = config.GetValue<int>("ForwardLimit");
+        var section = builder.Configuration.GetSection("ForwardedHeaders");
+        options.ForwardedHeaders = section.GetValue<ForwardedHeaders>("ForwardedHeaders");
+        options.ForwardLimit = section.GetValue<int>("ForwardLimit");
 
-        foreach (var value in config.GetSection("KnownProxies").Get<string[]>() ?? []) {
+        foreach (var value in section.GetSection("KnownProxies").Get<string[]>() ?? []) {
             options.KnownProxies.Add(IPAddress.Parse(value));
         }
 
-        foreach (var value in config.GetSection("KnownIPNetworks").Get<string[]>() ?? []) {
+        foreach (var value in section.GetSection("KnownIPNetworks").Get<string[]>() ?? []) {
             options.KnownIPNetworks.Add(IPNetwork.Parse(value));
         }
     });

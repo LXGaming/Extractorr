@@ -34,8 +34,8 @@ public class TorrentService(
             .ToDictionary(provider => provider.Type, provider => provider);
         logger.LogInformation("Discovered {Count} torrent client provider(s)", clientProviders.Count);
 
-        foreach (var configuration in _torrentOptions.Clients) {
-            var options = configuration.Get<TorrentClientOptions>();
+        foreach (var section in _torrentOptions.Clients) {
+            var options = section.Get<TorrentClientOptions>();
             if (options == null) {
                 logger.LogWarning("TorrentClientOptions is unavailable");
                 continue;
@@ -58,7 +58,7 @@ public class TorrentService(
 
             ITorrentClient client;
             try {
-                client = clientProvider.CreateClient(configuration);
+                client = clientProvider.CreateClient(section);
             } catch (Exception ex) {
                 logger.LogError(ex, "Encountered an error while creating {Name} ({Type}) torrent client",
                     options.Name, options.Type);
