@@ -1,4 +1,5 @@
-﻿using LXGaming.Extractorr.Server.Services.Extraction.Results;
+﻿using System.Collections.Immutable;
+using LXGaming.Extractorr.Server.Services.Extraction.Results;
 using LXGaming.Extractorr.Server.Utilities;
 using LXGaming.Hosting;
 using SharpCompress.Archives;
@@ -14,7 +15,6 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
     public Task StartAsync(CancellationToken cancellationToken) {
         if (_options.Extensions.Count == 0) {
             logger.LogWarning("Extraction extensions have not been configured");
-            return Task.CompletedTask;
         }
 
         return Task.CompletedTask;
@@ -24,14 +24,9 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
         return Task.CompletedTask;
     }
 
-    public bool Execute(string path, IEnumerable<string> files) {
-        var absoluteDirectoryPath = PathUtils.GetFullDirectoryPath(path);
-        if (!Directory.Exists(absoluteDirectoryPath)) {
-            logger.LogWarning("Invalid Extraction: {Directory} does not exist", absoluteDirectoryPath);
-            return false;
-        }
-
+    public async Task<bool> ExecuteAsync(IEnumerable<string> files) {
         var extractableFiles = files
+            .Select(Path.GetFullPath)
             .Where(File.Exists)
             .Where(IsExtractable)
             .ToList();
@@ -40,33 +35,41 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
             return true;
         }
 
-        var extractPath = Path.Join(path, $".{Constants.Application.Id}");
-        if (Directory.Exists(extractPath)) {
-            logger.LogDebug("Cleaning up existing {Path}", extractPath);
-            Delete(extractPath);
-        } else {
-            logger.LogDebug("Creating {Path}", extractPath);
-            Directory.CreateDirectory(extractPath);
-        }
-
         while (extractableFiles.Count > 0) {
             var extractableFile = extractableFiles[0];
             extractableFiles.RemoveAt(0);
 
-            var extractResult = Extract(extractableFile, extractPath);
+            var directoryPath = Path.GetDirectoryName(extractableFile);
+            if (!Directory.Exists(directoryPath)) {
+                logger.LogWarning("Cannot extract {File} as {Directory} does not exist", extractableFile,
+                    directoryPath);
+                continue;
+            }
+
+            var extractPath = PathUtils.GetFullDirectoryPath($"{extractableFile}.{Constants.Application.Id}");
+            if (Directory.Exists(extractPath)) {
+                logger.LogDebug("Cleaning up existing extraction directory {Path}", extractPath);
+                Delete(extractPath, true);
+            } else {
+                logger.LogDebug("Creating extraction directory {Path}", extractPath);
+                Directory.CreateDirectory(extractPath);
+            }
+
+            var extractResult = await ExtractAsync(extractableFile, extractPath);
             if (extractResult.Volumes != null) {
                 extractableFiles.RemoveAll(extractResult.Volumes.Contains);
             }
 
-            if (!extractResult.State) {
+            if (!extractResult.IsSuccess) {
                 continue;
             }
 
-            Move(extractPath, path);
+            Move(extractPath, directoryPath);
+
+            logger.LogDebug("Deleting extraction directory {Path}", extractPath);
+            Directory.Delete(extractPath, true);
         }
 
-        logger.LogDebug("Deleting {Path}", extractPath);
-        Directory.Delete(extractPath, true);
         return true;
     }
 
@@ -74,8 +77,8 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
         return Path.HasExtension(path) && _options.Extensions.Contains(Path.GetExtension(path));
     }
 
-    private ExtractResult Extract(string path, string destinationDirectory) {
-        var volumes = new HashSet<string>();
+    private async Task<ExtractResult> ExtractAsync(string path, string destinationDirectory) {
+        var volumesBuilder = ImmutableHashSet.CreateBuilder<string>();
         try {
             using var archive = ArchiveFactory.Open(path);
             foreach (var volume in archive.Volumes) {
@@ -83,8 +86,8 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
                     continue;
                 }
 
-                var absoluteFileName = Path.GetFullPath(volume.FileName, path);
-                volumes.Add(absoluteFileName);
+                var fileName = Path.GetFullPath(volume.FileName);
+                volumesBuilder.Add(fileName);
             }
 
             logger.LogDebug("Extracting {Path} ({ArchiveType})", path, archive.Type);
@@ -95,20 +98,20 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
 
                 var destinationFile = Path.Join(destinationDirectory, entry.Key);
                 logger.LogDebug("Extracting {Entry} -> {Destination}", entry.Key, destinationFile);
-                entry.WriteToDirectory(destinationDirectory);
+                await entry.WriteToDirectoryAsync(destinationDirectory);
             }
 
-            return ExtractResult.FromSuccess(volumes);
+            return ExtractResult.FromSuccess(volumesBuilder.ToImmutable());
         } catch (Exception ex) {
             logger.LogError(ex, "Encountered an error while extracting {Path}", path);
-            return ExtractResult.FromError(volumes);
+            return ExtractResult.FromError(ex, volumesBuilder.ToImmutable());
         }
     }
 
     private bool Move(string sourceDirectory, string destinationDirectory) {
         var files = new Dictionary<string, string>();
         foreach (var file in Directory.EnumerateFiles(sourceDirectory)) {
-            var destinationFile = Path.Join(destinationDirectory, Path.GetRelativePath(sourceDirectory, file));
+            var destinationFile = Path.Combine(destinationDirectory, Path.GetRelativePath(sourceDirectory, file));
             if (File.Exists(destinationFile)) {
                 logger.LogWarning("Cannot move {Source} as {Destination} already exists", file, destinationFile);
                 return false;
@@ -125,13 +128,13 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
         return true;
     }
 
-    private static void Delete(string path) {
+    private static void Delete(string path, bool recursive) {
         foreach (var file in Directory.EnumerateFiles(path)) {
             File.Delete(file);
         }
 
         foreach (var directory in Directory.EnumerateDirectories(path)) {
-            Directory.Delete(directory, true);
+            Directory.Delete(directory, recursive);
         }
     }
 }

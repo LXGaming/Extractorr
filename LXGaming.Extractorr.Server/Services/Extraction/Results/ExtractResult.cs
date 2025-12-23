@@ -4,16 +4,22 @@ namespace LXGaming.Extractorr.Server.Services.Extraction.Results;
 
 public class ExtractResult {
 
-    public bool State { get; }
+    public bool IsSuccess => Exception == null;
 
-    public IReadOnlyCollection<string>? Volumes { get; }
+    public Exception? Exception { get; }
 
-    private ExtractResult(bool state, IReadOnlyCollection<string>? volumes) {
-        State = state;
+    public ImmutableHashSet<string>? Volumes { get; }
+
+    private ExtractResult(Exception? exception, ImmutableHashSet<string>? volumes) {
+        Exception = exception;
         Volumes = volumes;
     }
 
-    public static ExtractResult FromError(IEnumerable<string> volumes) => new(false, volumes.ToImmutableHashSet());
+    public static ExtractResult FromSuccess(ImmutableHashSet<string> volumes) {
+        return new ExtractResult(null, volumes);
+    }
 
-    public static ExtractResult FromSuccess(IEnumerable<string> volumes) => new(true, volumes.ToImmutableHashSet());
+    public static ExtractResult FromError(Exception exception, ImmutableHashSet<string>? volumes = null) {
+        return new ExtractResult(exception, volumes);
+    }
 }

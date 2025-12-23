@@ -7,43 +7,43 @@ public static class FloodExtensions {
 
     public static async Task<List<string>> GetTorrentFilesAsync(this FloodTorrentClient torrentClient,
         TorrentProperties torrentProperties) {
-        if (string.IsNullOrEmpty(torrentProperties.Directory) || string.IsNullOrEmpty(torrentProperties.Hash)) {
-            throw new InvalidOperationException("Invalid TorrentProperties");
-        }
-
-        var absoluteDirectoryPath = PathUtils.GetFullDirectoryPath(torrentProperties.Directory);
-        if (!Directory.Exists(absoluteDirectoryPath)) {
-            throw new InvalidOperationException($"{absoluteDirectoryPath} does not exist");
-        }
+        var torrentPath = torrentProperties.GetPath();
 
         var torrentContents = await torrentClient.GetTorrentContentsAsync(torrentProperties.Hash);
         if (torrentContents == null || torrentContents.Length == 0) {
-            throw new InvalidOperationException($"{torrentProperties.Hash} has no contents");
+            throw new InvalidOperationException($"{torrentProperties.Name} ({torrentProperties.Hash}) has no contents");
         }
 
         var files = new List<string>();
         foreach (var torrentContent in torrentContents) {
-            if (string.IsNullOrEmpty(torrentContent.Path)) {
-                continue;
-            }
-
             var contentPath = torrentContent.Path.TrimStart('/');
             if (string.IsNullOrEmpty(contentPath)) {
                 continue;
             }
 
-            var absolutePath = Path.GetFullPath(contentPath, absoluteDirectoryPath);
-            if (!File.Exists(absolutePath)) {
-                if (!Directory.Exists(absolutePath)) {
-                    throw new InvalidOperationException($"{absolutePath} does not exist");
+            var path = Path.GetFullPath(contentPath, torrentPath);
+            if (!path.StartsWith(torrentPath)) {
+                throw new IOException($"{path} is not inside {torrentPath}");
+            }
+
+            if (!File.Exists(path)) {
+                if (!Directory.Exists(path)) {
+                    throw new IOException($"{path} does not exist");
                 }
 
                 continue;
             }
 
-            files.Add(absolutePath);
+            files.Add(path);
         }
 
         return files;
+    }
+
+    public static string GetPath(this TorrentProperties torrentProperties) {
+        var directoryPath = PathUtils.GetFullDirectoryPath(torrentProperties.Directory);
+        return Directory.Exists(directoryPath)
+            ? directoryPath
+            : throw new IOException($"{directoryPath} does not exist");
     }
 }

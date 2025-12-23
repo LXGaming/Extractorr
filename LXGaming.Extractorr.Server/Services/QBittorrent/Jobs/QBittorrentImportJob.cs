@@ -4,7 +4,6 @@ using LXGaming.Extractorr.Server.Services.QBittorrent.Utilities;
 using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Services.Torrent;
 using LXGaming.Extractorr.Server.Services.Torrent.Utilities;
-using LXGaming.Extractorr.Server.Utilities;
 using Quartz;
 
 namespace LXGaming.Extractorr.Server.Services.QBittorrent.Jobs;
@@ -41,14 +40,11 @@ public class QBittorrentImportJob(
         }
 
         var torrentInfo = torrentInfos.Single();
-        if (string.IsNullOrEmpty(torrentInfo.SavePath)) {
-            logger.LogWarning("Invalid Torrent: SavePath is null or empty");
-            return;
-        }
-
-        var absoluteDirectoryPath = PathUtils.GetFullDirectoryPath(torrentInfo.SavePath);
-        if (!Directory.Exists(absoluteDirectoryPath)) {
-            logger.LogWarning("Invalid Torrent: {Directory} does not exist", absoluteDirectoryPath);
+        string torrentPath;
+        try {
+            torrentPath = torrentInfo.GetPath();
+        } catch (Exception ex) {
+            logger.LogWarning("Invalid Torrent: {Message}", ex.Message);
             return;
         }
 
@@ -56,35 +52,36 @@ public class QBittorrentImportJob(
         try {
             torrentFiles = await torrentClient.GetTorrentFilesAsync(torrentInfo);
         } catch (Exception ex) {
-            logger.LogError(ex, "Encountered an error while getting torrent files for {Name} ({Id})",
-                torrentInfo.Name, torrentInfo.Hash);
+            logger.LogError(ex, "Encountered an error while getting torrent files for {Name} ({Id})", torrentInfo.Name,
+                torrentInfo.Hash);
             return;
         }
 
         if (!torrentFiles.Any(extractionService.IsExtractable)) {
-            logger.LogWarning("Invalid Torrent: {Id} has no extractable contents", eventArgs.Id);
+            logger.LogWarning("Invalid Torrent: {Name} ({Id}) has no extractable contents", torrentInfo.Name,
+                torrentInfo.Hash);
             return;
         }
 
         foreach (var file in eventArgs.Files) {
-            var absoluteFilePath = Path.GetFullPath(file);
-            if (!absoluteFilePath.StartsWith(absoluteDirectoryPath)) {
-                logger.LogWarning("Invalid Import File: {File}", absoluteFilePath);
+            var filePath = Path.GetFullPath(file);
+            if (!filePath.StartsWith(torrentPath)) {
+                logger.LogWarning("Invalid Import File: {File} is not inside {Path}", filePath, torrentPath);
                 continue;
             }
 
-            if (!File.Exists(absoluteFilePath)) {
-                logger.LogWarning("Invalid Import File: {File} does not exist", absoluteFilePath);
+            if (!File.Exists(filePath)) {
+                logger.LogWarning("Invalid Import File: {File} does not exist", filePath);
                 continue;
             }
 
-            if (torrentFiles.Any(torrentFile => string.Equals(torrentFile, absoluteFilePath, StringComparison.OrdinalIgnoreCase))) {
-                logger.LogWarning("Invalid Import File: {File} is part of the torrent", absoluteFilePath);
+            if (torrentFiles.Any(torrentFile => string.Equals(torrentFile, filePath, StringComparison.OrdinalIgnoreCase))) {
+                logger.LogWarning("Invalid Import File: {File} is part of the torrent", filePath);
                 continue;
             }
 
-            logger.LogInformation("Deleting Import File: {File}", absoluteFilePath);
-            File.Delete(absoluteFilePath);
+            logger.LogInformation("Deleting Import File: {File}", filePath);
+            File.Delete(filePath);
         }
     }
 }

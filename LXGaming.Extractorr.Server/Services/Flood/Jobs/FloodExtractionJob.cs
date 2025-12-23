@@ -63,11 +63,9 @@ public class FloodExtractionJob(
         }
 
         foreach (var (key, value) in torrentListSummary.Torrents) {
-            if (torrentClient.ExcludedTorrents.Contains(key) || string.IsNullOrEmpty(value.Directory)) {
-                continue;
-            }
-
-            if (!value.Status.Contains(TorrentStatus.Complete) || !value.Tags.Contains(Constants.Application.Id)) {
+            if (torrentClient.ExcludedTorrents.Contains(key)
+                || !value.Status.Contains(TorrentStatus.Complete)
+                || !value.Tags.Contains(Constants.Application.Id)) {
                 continue;
             }
 
@@ -82,7 +80,7 @@ public class FloodExtractionJob(
 
             if (torrentFiles.Any(extractionService.IsExtractable)) {
                 logger.LogDebug("Processing {Name} ({Id}) for extraction", value.Name, key);
-                if (!extractionService.Execute(value.Directory, torrentFiles)) {
+                if (!await extractionService.ExecuteAsync(torrentFiles)) {
                     torrentClient.ExcludedTorrents.Add(key);
                     continue;
                 }

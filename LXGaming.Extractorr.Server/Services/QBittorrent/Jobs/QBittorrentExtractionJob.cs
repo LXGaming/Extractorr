@@ -47,11 +47,9 @@ public class QBittorrentExtractionJob(
         }
 
         foreach (var torrent in torrents) {
-            if (torrentClient.ExcludedTorrents.Contains(torrent.Hash) || string.IsNullOrEmpty(torrent.SavePath)) {
-                continue;
-            }
-
-            if (!torrent.State.IsComplete() || !torrent.Tags.Contains(Constants.Application.Id)) {
+            if (torrentClient.ExcludedTorrents.Contains(torrent.Hash)
+                || !torrent.State.IsComplete()
+                || !torrent.Tags.Contains(Constants.Application.Id)) {
                 continue;
             }
 
@@ -66,7 +64,7 @@ public class QBittorrentExtractionJob(
 
             if (torrentFiles.Any(extractionService.IsExtractable)) {
                 logger.LogDebug("Processing {Name} ({Hash}) for extraction", torrent.Name, torrent.Hash);
-                if (!extractionService.Execute(torrent.SavePath, torrentFiles)) {
+                if (!await extractionService.ExecuteAsync(torrentFiles)) {
                     torrentClient.ExcludedTorrents.Add(torrent.Hash);
                     continue;
                 }
