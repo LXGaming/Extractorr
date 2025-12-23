@@ -1,4 +1,11 @@
 <linker>
+  <!-- Controllers -->
+  <assembly fullname="Microsoft.AspNetCore.Mvc.Core">
+    <type fullname="Microsoft.AspNetCore.Mvc.ControllerBase">
+      <property name="ControllerContext" />
+    </type>
+  </assembly>
+
   <!-- LibLog -->
   <assembly fullname="Serilog" preserve="all" />
 
