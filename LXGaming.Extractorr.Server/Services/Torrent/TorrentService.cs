@@ -62,6 +62,7 @@ public class TorrentService(
             if (_clients.Add(client)) {
                 logger.LogInformation("{Client} torrent client registered", options);
             } else {
+                client.Dispose();
                 logger.LogWarning("{Client} torrent client is already registered", options);
             }
         }
@@ -84,6 +85,7 @@ public class TorrentService(
                 if (_clients.Add(client)) {
                     logger.LogInformation("{Client} torrent client registered", client);
                 } else {
+                    client.Dispose();
                     logger.LogWarning("{Client} torrent client is already registered", client);
                 }
             }

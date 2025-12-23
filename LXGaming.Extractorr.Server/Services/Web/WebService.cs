@@ -13,8 +13,14 @@ public class WebService(IConfiguration configuration, JsonSerializerOptions json
 
     public virtual HttpClient CreateClient(HttpMessageHandler handler) {
         var client = new HttpClient(handler);
-        client.DefaultRequestHeaders.Add("User-Agent", Constants.Application.UserAgent);
-        client.Timeout = TimeSpan.FromMilliseconds(_options.Timeout);
+        try {
+            client.DefaultRequestHeaders.Add("User-Agent", Constants.Application.UserAgent);
+            client.Timeout = TimeSpan.FromMilliseconds(_options.Timeout);
+        } catch (Exception) {
+            client.Dispose();
+            throw;
+        }
+
         return client;
     }
 

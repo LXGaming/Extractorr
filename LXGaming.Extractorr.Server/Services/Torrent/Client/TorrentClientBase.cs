@@ -31,12 +31,14 @@ public abstract class TorrentClientBase : ITorrentClient {
             throw new InvalidOperationException("Address has not been configured");
         }
 
+        var baseAddress = new Uri(Options.Address, UriKind.Absolute);
+
         var handler = WebService.CreateHandler();
         handler.CookieContainer = new CookieContainer();
         handler.UseCookies = true;
 
         var client = WebService.CreateClient(handler);
-        client.BaseAddress = new Uri(Options.Address);
+        client.BaseAddress = baseAddress;
 
         foreach (var pair in Options.AdditionalHeaders) {
             if (!client.DefaultRequestHeaders.TryAddWithoutValidation(pair.Key, pair.Value)) {
