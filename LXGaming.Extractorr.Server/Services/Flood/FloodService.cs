@@ -38,6 +38,10 @@ public class FloodService(
                 JobBuilder.Create<FloodExtractionJob>().WithIdentity(FloodExtractionJob.JobKey).Build(),
                 TriggerBuilder.Create().WithCronSchedule(_options.Schedule).Build(),
                 cancellationToken);
+
+            if (_options.RunOnStart) {
+                await scheduler.TriggerJob(FloodExtractionJob.JobKey, cancellationToken);
+            }
         } else {
             logger.LogWarning("Flood schedule has not been configured");
         }
