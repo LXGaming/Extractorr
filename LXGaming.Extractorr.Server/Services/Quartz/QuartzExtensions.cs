@@ -4,13 +4,20 @@ namespace LXGaming.Extractorr.Server.Services.Quartz;
 
 public static class QuartzExtensions {
 
-    public static T TryGetOrCreateValue<T>(this IJobExecutionContext context, string key) where T : new() {
-        if (context.JobDetail.JobDataMap.TryGetValue(key, out var existingValue)) {
-            return (T) existingValue;
+    public static T? Get<T>(this JobDataMap jobDataMap, string key, T? defaultValue = default) {
+        if (jobDataMap.TryGetValue(key, out var value)) {
+            return (T) value;
         }
 
-        var value = new T();
-        context.JobDetail.JobDataMap.Put(key, value);
+        return defaultValue;
+    }
+
+    public static T GetRequired<T>(this JobDataMap jobDataMap, string key) {
+        var value = jobDataMap.Get<T>(key);
+        if (value == null) {
+            throw new InvalidOperationException($"Key '{key}' not found");
+        }
+
         return value;
     }
 }

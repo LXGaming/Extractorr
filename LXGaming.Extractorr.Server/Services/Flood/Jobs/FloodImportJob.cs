@@ -1,5 +1,9 @@
 ﻿using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.Extraction;
+using LXGaming.Extractorr.Server.Services.Flood.Utilities;
+using LXGaming.Extractorr.Server.Services.Quartz;
+using LXGaming.Extractorr.Server.Services.Torrent;
+using LXGaming.Extractorr.Server.Services.Torrent.Utilities;
 using LXGaming.Extractorr.Server.Utilities;
 using Quartz;
 
@@ -7,24 +11,32 @@ namespace LXGaming.Extractorr.Server.Services.Flood.Jobs;
 
 public class FloodImportJob(
     ExtractionService extractionService,
-    FloodService floodService,
-    ILogger<FloodImportJob> logger) : IJob {
+    ILogger<FloodImportJob> logger,
+    TorrentService torrentService) : IJob {
 
     public const string EventKey = "event";
     public static readonly JobKey JobKey = JobKey.Create(nameof(FloodImportJob));
 
     public async Task Execute(IJobExecutionContext context) {
-        if (context.MergedJobDataMap.Get(EventKey) is not ImportEventArgs eventArgs) {
-            throw new InvalidOperationException("Unexpected Type");
-        }
+        var eventArgs = context.MergedJobDataMap.GetRequired<ImportEventArgs>(EventKey);
 
+        foreach (var torrentClient in torrentService.GetClients<FloodTorrentClient>()) {
+            try {
+                await ExecuteAsync(torrentClient, eventArgs);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Encountered an error while executing {Client}", torrentClient);
+            }
+        }
+    }
+
+    private async Task ExecuteAsync(FloodTorrentClient torrentClient, ImportEventArgs eventArgs) {
         if (!eventArgs.Delete) {
             return;
         }
 
-        var torrentProperties = await floodService.EnsureAuthenticatedAsync(() => floodService.GetTorrentAsync(eventArgs.Id));
+        var torrentProperties = await torrentClient.GetTorrentAsync(eventArgs.Id);
         if (torrentProperties == null || string.IsNullOrEmpty(torrentProperties.Directory)) {
-            logger.LogWarning("Invalid Import: {Id} does not exist", eventArgs.Id);
+            logger.LogWarning("Invalid Import: {Id} was not found on {Client}", eventArgs.Id, torrentClient);
             return;
         }
 
@@ -36,7 +48,7 @@ public class FloodImportJob(
 
         List<string> torrentFiles;
         try {
-            torrentFiles = await floodService.GetTorrentFilesAsync(torrentProperties);
+            torrentFiles = await torrentClient.GetTorrentFilesAsync(torrentProperties);
         } catch (Exception ex) {
             logger.LogError(ex, "Encountered an error while getting torrent files for {Name} ({Id})",
                 torrentProperties.Name, torrentProperties.Hash);

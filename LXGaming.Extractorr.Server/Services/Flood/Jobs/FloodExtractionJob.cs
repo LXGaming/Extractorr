@@ -1,26 +1,36 @@
 ﻿using System.Net;
 using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood.Models;
-using LXGaming.Extractorr.Server.Services.Quartz;
+using LXGaming.Extractorr.Server.Services.Flood.Utilities;
+using LXGaming.Extractorr.Server.Services.Torrent;
+using LXGaming.Extractorr.Server.Services.Torrent.Utilities;
 using LXGaming.Extractorr.Server.Utilities;
 using Quartz;
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Jobs;
 
 [DisallowConcurrentExecution]
-[PersistJobDataAfterExecution]
 public class FloodExtractionJob(
     ExtractionService extractionService,
-    FloodService floodService,
-    ILogger<FloodExtractionJob> logger) : IJob {
+    ILogger<FloodExtractionJob> logger,
+    TorrentService torrentService) : IJob {
 
-    public const string TorrentsKey = "torrents";
     public static readonly JobKey JobKey = JobKey.Create(nameof(FloodExtractionJob));
 
     public async Task Execute(IJobExecutionContext context) {
+        foreach (var torrentClient in torrentService.GetClients<FloodTorrentClient>()) {
+            try {
+                await ExecuteAsync(torrentClient);
+            } catch (Exception ex) {
+                logger.LogWarning(ex, "Encountered an error while executing {Client}", torrentClient);
+            }
+        }
+    }
+
+    private async Task ExecuteAsync(FloodTorrentClient torrentClient) {
         TorrentListSummary torrentListSummary;
         try {
-            torrentListSummary = await floodService.EnsureAuthenticatedAsync(floodService.GetTorrentsAsync);
+            torrentListSummary = await torrentClient.GetTorrentsAsync();
         } catch (HttpRequestException ex) {
             if (ex is not { StatusCode: HttpStatusCode.InternalServerError }) {
                 throw;
@@ -34,10 +44,9 @@ public class FloodExtractionJob(
             return;
         }
 
-        var excludedTorrents = context.TryGetOrCreateValue<HashSet<string>>(TorrentsKey);
-        excludedTorrents.RemoveWhere(key => !torrentListSummary.Torrents.ContainsKey(key));
+        torrentClient.ExcludedTorrents.RemoveWhere(key => !torrentListSummary.Torrents.ContainsKey(key));
 
-        if (floodService.Options.SkipActiveExtraction) {
+        if (torrentClient.SkipActiveExtraction) {
             var activeTorrents = torrentListSummary.Torrents
                 .Where(pair => pair.Value.Status.Contains(TorrentStatus.Active)
                                && !pair.Value.Status.Contains(TorrentStatus.Complete)
@@ -54,7 +63,7 @@ public class FloodExtractionJob(
         }
 
         foreach (var (key, value) in torrentListSummary.Torrents) {
-            if (excludedTorrents.Contains(key) || string.IsNullOrEmpty(value.Directory)) {
+            if (torrentClient.ExcludedTorrents.Contains(key) || string.IsNullOrEmpty(value.Directory)) {
                 continue;
             }
 
@@ -64,7 +73,7 @@ public class FloodExtractionJob(
 
             List<string> torrentFiles;
             try {
-                torrentFiles = await floodService.GetTorrentFilesAsync(value);
+                torrentFiles = await torrentClient.GetTorrentFilesAsync(value);
             } catch (Exception ex) {
                 logger.LogError(ex, "Encountered an error while getting torrent files for {Name} ({Id})",
                     value.Name, value.Hash);
@@ -74,7 +83,7 @@ public class FloodExtractionJob(
             if (torrentFiles.Any(extractionService.IsExtractable)) {
                 logger.LogDebug("Processing {Name} ({Id}) for extraction", value.Name, key);
                 if (!extractionService.Execute(value.Directory, torrentFiles)) {
-                    excludedTorrents.Add(key);
+                    torrentClient.ExcludedTorrents.Add(key);
                     continue;
                 }
             } else {
@@ -83,7 +92,7 @@ public class FloodExtractionJob(
 
             var tags = value.Tags.Remove(Constants.Application.Id);
             logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", value.Name, key, string.Join(", ", tags));
-            await floodService.SetTorrentTagsAsync([key], tags);
+            await torrentClient.SetTorrentTagsAsync([key], tags);
         }
     }
 }
