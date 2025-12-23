@@ -10,7 +10,7 @@ public static class Extensions {
         return new UnauthorizedResult();
     }
 
-    public static bool VerifyBasicAuthentication(this HttpRequest request, string? username, string? password) {
+    public static bool VerifyBasicAuthentication(this HttpRequest request, string username, string password) {
         string? authorization = request.Headers.Authorization;
         if (string.IsNullOrEmpty(authorization) || !authorization.StartsWith(Constants.AuthenticationSchemes.Basic, StringComparison.OrdinalIgnoreCase)) {
             return false;
@@ -33,6 +33,6 @@ public static class Extensions {
             return false;
         }
 
-        return string.Equals(username, arguments[0]) && string.Equals(password, arguments[1]);
+        return StringUtils.SlowEquals(username, arguments[0]) && StringUtils.SlowEquals(password, arguments[1]);
     }
 }
