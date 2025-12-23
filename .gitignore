@@ -471,3 +471,5 @@ $RECYCLE.BIN/
 # Project
 .idea/
 build.ps1
+event_*.json
+!event_test.json
