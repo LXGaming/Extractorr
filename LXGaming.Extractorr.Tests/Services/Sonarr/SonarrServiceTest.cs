@@ -16,6 +16,7 @@ public class SonarrServiceTest : ServiceTestBase {
     private static readonly string[] Events = [
         "download",
         "grab",
+        "import_complete",
         "test"
     ];
 
