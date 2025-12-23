@@ -33,6 +33,7 @@ public static class Extensions {
             return false;
         }
 
-        return StringUtils.SlowEquals(username, arguments[0]) && StringUtils.SlowEquals(password, arguments[1]);
+        return StringUtils.FixedTimeEquals(username, arguments[0], Encoding.UTF8)
+               && StringUtils.FixedTimeEquals(password, arguments[1], Encoding.UTF8);
     }
 }
