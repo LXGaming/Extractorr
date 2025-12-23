@@ -25,11 +25,6 @@ public class TorrentService(
     }
 
     public Task StartedAsync(CancellationToken cancellationToken) {
-        if (_torrentOptions.Clients.Count == 0) {
-            logger.LogWarning("No torrent clients configured");
-            return Task.CompletedTask;
-        }
-
         var clientProviders = serviceProvider.GetServices<ITorrentClientProvider>()
             .ToDictionary(provider => provider.Type, provider => provider);
         logger.LogInformation("Discovered {Count} torrent client provider(s)", clientProviders.Count);
@@ -69,6 +64,33 @@ public class TorrentService(
             } else {
                 logger.LogWarning("{Client} torrent client is already registered", options);
             }
+        }
+
+        // Backwards Compatibility
+        if (_clients.Count == 0) {
+            foreach (var (clientType, clientProvider) in clientProviders) {
+                ITorrentClient? client;
+                try {
+                    client = clientProvider.CreateLegacyClient();
+                } catch (Exception ex) {
+                    logger.LogError(ex, "Encountered an error while creating {Type} legacy torrent client", clientType);
+                    continue;
+                }
+
+                if (client == null) {
+                    continue;
+                }
+
+                if (_clients.Add(client)) {
+                    logger.LogInformation("{Client} torrent client registered", client);
+                } else {
+                    logger.LogWarning("{Client} torrent client is already registered", client);
+                }
+            }
+        }
+
+        if (_clients.Count == 0) {
+            logger.LogWarning("No torrent clients configured");
         }
 
         return Task.CompletedTask;

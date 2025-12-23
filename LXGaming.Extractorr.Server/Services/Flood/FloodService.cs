@@ -63,6 +63,18 @@ public class FloodService(
         return new FloodTorrentClient(options, serviceProvider);
     }
 
+    public ITorrentClient? CreateLegacyClient() {
+        var options = configuration.GetSection(FloodOptions.Key).Get<TorrentClientOptions>();
+        if (options == null || string.IsNullOrEmpty(options.Address)) {
+            return null;
+        }
+
+        options.Type = TorrentClientType.Flood;
+        options.Enabled = true;
+        options.Name = "Legacy";
+        return new FloodTorrentClient(options, serviceProvider);
+    }
+
     private async Task OnGrabAsync(object? sender, GrabEventArgs eventArgs) {
         var scheduler = await schedulerFactory.GetScheduler();
         await scheduler.TriggerJob(FloodGrabJob.JobKey, new JobDataMap {
