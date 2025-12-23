@@ -75,7 +75,7 @@ public class RadarrService(
 
         var path = PathUtils.GetMappedPath(Options.RemotePathMappings, payload.MovieFile.Path);
         if (!payload.MovieFile.Path.Equals(path)) {
-            logger.LogInformation("Mapped {Remote} -> {Local}", payload.MovieFile.Path, path);
+            logger.LogInformation("Mapped {Remote} to {Local}", payload.MovieFile.Path, path);
         }
 
         logger.LogInformation("Import {File} ({DownloadId})", path, payload.DownloadId);

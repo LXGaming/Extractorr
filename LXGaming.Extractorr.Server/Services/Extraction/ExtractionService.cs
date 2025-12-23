@@ -90,14 +90,14 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
                 volumesBuilder.Add(fileName);
             }
 
-            logger.LogDebug("Extracting {Path} ({ArchiveType})", path, archive.Type);
+            logger.LogInformation("Extracting {Path} ({ArchiveType})", path, archive.Type);
             foreach (var entry in archive.Entries) {
                 if (entry.IsDirectory) {
                     continue;
                 }
 
                 var destinationFile = Path.Join(destinationDirectory, entry.Key);
-                logger.LogDebug("Extracting {Entry} -> {Destination}", entry.Key, destinationFile);
+                logger.LogDebug("Extracting {Entry} to {Destination}", entry.Key, destinationFile);
                 await entry.WriteToDirectoryAsync(destinationDirectory);
             }
 
@@ -121,7 +121,7 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
         }
 
         foreach (var (key, value) in files) {
-            logger.LogDebug("Moving {Source} -> {Destination}", key, value);
+            logger.LogDebug("Moving {Source} to {Destination}", key, value);
             File.Move(key, value);
         }
 

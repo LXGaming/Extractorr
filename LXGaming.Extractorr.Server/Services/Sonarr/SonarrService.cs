@@ -90,7 +90,7 @@ public class SonarrService(
 
         var path = PathUtils.GetMappedPath(Options.RemotePathMappings, payload.EpisodeFile.Path);
         if (!payload.EpisodeFile.Path.Equals(path)) {
-            logger.LogInformation("Mapped {Remote} -> {Local}", payload.EpisodeFile.Path, path);
+            logger.LogInformation("Mapped {Remote} to {Local}", payload.EpisodeFile.Path, path);
         }
 
         logger.LogInformation("Import {File} ({DownloadId})", path, payload.DownloadId);
@@ -118,7 +118,7 @@ public class SonarrService(
 
             var path = PathUtils.GetMappedPath(Options.RemotePathMappings, episodeFile.Path);
             if (!episodeFile.Path.Equals(path)) {
-                logger.LogInformation("Mapped {Remote} -> {Local}", episodeFile.Path, path);
+                logger.LogInformation("Mapped {Remote} to {Local}", episodeFile.Path, path);
             }
 
             pathsBuilder.Add(path);
