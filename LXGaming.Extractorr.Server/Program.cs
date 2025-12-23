@@ -3,10 +3,12 @@ using System.Net;
 using LXGaming.Common.Serilog;
 using LXGaming.Extractorr.Server.Services.Web.Utilities;
 using LXGaming.Hosting.Generated;
+using Microsoft.AspNetCore.HttpOverrides;
 using Quartz;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.File.Archive;
+using IPNetwork = System.Net.IPNetwork;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.ControlledBy(new EnvironmentLoggingLevelSwitch(LogEventLevel.Verbose, LogEventLevel.Debug))
@@ -35,13 +37,14 @@ try {
 
     builder.Services.Configure<ForwardedHeadersOptions>(options => {
         var config = builder.Configuration.GetSection("ForwardedHeaders");
-        config.Bind(options);
+        options.ForwardedHeaders = config.GetValue<ForwardedHeaders>("ForwardedHeaders");
+        options.ForwardLimit = config.GetValue<int>("ForwardLimit");
 
         foreach (var value in config.GetSection("KnownProxies").Get<string[]>() ?? []) {
             options.KnownProxies.Add(IPAddress.Parse(value));
         }
 
-        foreach (var value in config.GetSection("KnownNetworks").Get<string[]>() ?? []) {
+        foreach (var value in config.GetSection("KnownIPNetworks").Get<string[]>() ?? []) {
             options.KnownIPNetworks.Add(IPNetwork.Parse(value));
         }
     });
