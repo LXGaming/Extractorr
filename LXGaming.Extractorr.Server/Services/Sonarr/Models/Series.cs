@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
@@ -36,13 +37,13 @@ public record Series {
     public int? Year { get; init; }
 
     [JsonPropertyName("genres")]
-    public List<string>? Genres { get; init; }
+    public ImmutableArray<string>? Genres { get; init; }
 
     [JsonPropertyName("images")]
-    public List<Image>? Images { get; init; }
+    public ImmutableArray<Image>? Images { get; init; }
 
     [JsonPropertyName("tags")]
-    public List<string>? Tags { get; init; }
+    public ImmutableArray<string>? Tags { get; init; }
 
     [JsonPropertyName("originalLanguage")]
     public Language? OriginalLanguage { get; init; }

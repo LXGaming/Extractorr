@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
@@ -6,7 +7,7 @@ namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 public record CustomFormatInfo {
 
     [JsonPropertyName("customFormats")]
-    public List<CustomFormat>? CustomFormats { get; init; }
+    public ImmutableArray<CustomFormat>? CustomFormats { get; init; }
 
     [JsonPropertyName("customFormatScore")]
     public int? CustomFormatScore { get; init; }

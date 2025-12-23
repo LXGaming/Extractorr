@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Models;
 
@@ -78,13 +79,13 @@ public record TorrentProperties {
     public long SizeBytes { get; init; }
 
     [JsonPropertyName("status")]
-    public required List<TorrentStatus> Status { get; init; }
+    public required ImmutableArray<TorrentStatus> Status { get; init; }
 
     [JsonPropertyName("tags")]
-    public required List<string> Tags { get; init; }
+    public required ImmutableArray<string> Tags { get; init; }
 
     [JsonPropertyName("trackerURIs")]
-    public required List<string> TrackerUris { get; init; }
+    public required ImmutableArray<string> TrackerUris { get; init; }
 
     [JsonPropertyName("upRate")]
     public long UpRate { get; init; }

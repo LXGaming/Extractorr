@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
@@ -9,7 +10,7 @@ public record ImportPayload : Payload {
     public Series? Series { get; init; }
 
     [JsonPropertyName("episodes")]
-    public List<Episode>? Episodes { get; init; }
+    public ImmutableArray<Episode>? Episodes { get; init; }
 
     [JsonPropertyName("episodeFile")]
     public EpisodeFile? EpisodeFile { get; init; }
@@ -27,7 +28,7 @@ public record ImportPayload : Payload {
     public string? DownloadId { get; init; }
 
     [JsonPropertyName("deletedFiles")]
-    public List<EpisodeFile>? DeletedFiles { get; init; }
+    public ImmutableArray<EpisodeFile>? DeletedFiles { get; init; }
 
     [JsonPropertyName("customFormatInfo")]
     public CustomFormatInfo? CustomFormatInfo { get; init; }

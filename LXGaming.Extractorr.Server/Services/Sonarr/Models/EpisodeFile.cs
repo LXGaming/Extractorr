@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
@@ -33,7 +34,7 @@ public record EpisodeFile {
     public DateTime? DateAdded { get; init; }
 
     [JsonPropertyName("languages")]
-    public List<Language>? Languages { get; init; }
+    public ImmutableArray<Language> Languages { get; init; }
 
     [JsonPropertyName("mediaInfo")]
     public EpisodeFileMediaInfo? MediaInfo { get; init; }

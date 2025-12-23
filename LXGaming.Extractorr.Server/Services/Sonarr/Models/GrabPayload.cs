@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Sonarr.Models;
 
@@ -9,7 +10,7 @@ public record GrabPayload : Payload {
     public Series? Series { get; init; }
 
     [JsonPropertyName("episodes")]
-    public List<Episode>? Episodes { get; init; }
+    public ImmutableArray<Episode>? Episodes { get; init; }
 
     [JsonPropertyName("release")]
     public Release? Release { get; init; }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Immutable;
+using System.Text.Json;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Sonarr.Models;
 using LXGaming.Extractorr.Server.Services.Web;
@@ -109,7 +110,7 @@ public class SonarrService(
             return Task.CompletedTask;
         }
 
-        var paths = new List<string>(payload.EpisodeFiles.Count);
+        var pathsBuilder = ImmutableArray.CreateBuilder<string>(payload.EpisodeFiles.Value.Length);
         foreach (var episodeFile in payload.EpisodeFiles) {
             if (string.IsNullOrEmpty(episodeFile.Path)) {
                 continue;
@@ -120,10 +121,11 @@ public class SonarrService(
                 logger.LogInformation("Mapped {Remote} -> {Local}", episodeFile.Path, path);
             }
 
-            paths.Add(path);
+            pathsBuilder.Add(path);
         }
 
-        if (paths.Count == 0) {
+        var paths = pathsBuilder.DrainToImmutable();
+        if (paths.Length == 0) {
             logger.LogWarning("Invalid Import Complete: No Paths");
             return Task.CompletedTask;
         }

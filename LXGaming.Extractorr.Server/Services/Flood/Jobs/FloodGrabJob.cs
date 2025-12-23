@@ -20,9 +20,7 @@ public class FloodGrabJob(FloodService floodService, ILogger<FloodGrabJob> logge
             return;
         }
 
-        var tags = torrentProperties.Tags;
-        tags.Add(Constants.Application.Id);
-
+        var tags = torrentProperties.Tags.Add(Constants.Application.Id);
         logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", torrentProperties.Name, torrentProperties.Hash, string.Join(", ", tags));
         await floodService.SetTorrentTagsAsync([torrentProperties.Hash], tags);
     }

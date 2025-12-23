@@ -1,4 +1,5 @@
-﻿using LXGaming.Common.Event;
+﻿using System.Collections.Immutable;
+using LXGaming.Common.Event;
 using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Hosting;
 
@@ -24,7 +25,7 @@ public class EventService(ILogger<EventService> logger) {
         return OnImportAsync(id, [file], delete);
     }
 
-    public async Task OnImportAsync(string id, List<string> files, bool delete) {
+    public async Task OnImportAsync(string id, ImmutableArray<string> files, bool delete) {
         try {
             await Import.InvokeAsync(this, new ImportEventArgs {
                 Id = id,

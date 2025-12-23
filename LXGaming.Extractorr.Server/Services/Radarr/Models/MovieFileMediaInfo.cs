@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
@@ -12,7 +13,7 @@ public record MovieFileMediaInfo {
     public string? AudioCodec { get; init; }
 
     [JsonPropertyName("audioLanguages")]
-    public List<string>? AudioLanguages { get; init; }
+    public ImmutableArray<string>? AudioLanguages { get; init; }
 
     [JsonPropertyName("height")]
     public int? Height { get; init; }
@@ -21,7 +22,7 @@ public record MovieFileMediaInfo {
     public int? Width { get; init; }
 
     [JsonPropertyName("subtitles")]
-    public List<string>? Subtitles { get; init; }
+    public ImmutableArray<string>? Subtitles { get; init; }
 
     [JsonPropertyName("videoCodec")]
     public string? VideoCodec { get; init; }

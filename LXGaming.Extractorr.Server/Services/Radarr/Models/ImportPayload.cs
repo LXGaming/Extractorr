@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
@@ -27,7 +28,7 @@ public record ImportPayload : Payload {
     public string? DownloadId { get; init; }
 
     [JsonPropertyName("deletedFiles")]
-    public List<MovieFile>? DeletedFiles { get; init; }
+    public ImmutableArray<MovieFile>? DeletedFiles { get; init; }
 
     [JsonPropertyName("customFormatInfo")]
     public CustomFormatInfo? CustomFormatInfo { get; init; }

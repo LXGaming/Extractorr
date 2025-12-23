@@ -81,9 +81,9 @@ public class FloodExtractionJob(
                 logger.LogWarning("Skipping {Name} ({Id}) due to no extractable contents", value.Name, key);
             }
 
-            value.Tags.Remove(Constants.Application.Id);
-            logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", value.Name, key, string.Join(", ", value.Tags));
-            await floodService.SetTorrentTagsAsync([key], value.Tags);
+            var tags = value.Tags.Remove(Constants.Application.Id);
+            logger.LogDebug("Setting {Name} ({Id}) Tags: {Tags}", value.Name, key, string.Join(", ", tags));
+            await floodService.SetTorrentTagsAsync([key], tags);
         }
     }
 }

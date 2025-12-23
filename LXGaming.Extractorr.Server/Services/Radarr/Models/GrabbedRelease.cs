@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
@@ -15,5 +16,5 @@ public record GrabbedRelease {
     public long? Size { get; init; }
 
     [JsonPropertyName("indexerFlags")]
-    public List<string>? IndexerFlags { get; init; }
+    public ImmutableArray<string>? IndexerFlags { get; init; }
 }

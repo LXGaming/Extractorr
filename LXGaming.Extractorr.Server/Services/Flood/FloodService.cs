@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Immutable;
+using System.Net;
 using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.Flood.Jobs;
@@ -146,7 +147,7 @@ public class FloodService(
         return await webService.DeserializeAsync<TorrentListSummary>(response);
     }
 
-    public async Task<List<TorrentContent>> GetTorrentContentsAsync(string hash) {
+    public async Task<ImmutableArray<TorrentContent>> GetTorrentContentsAsync(string hash) {
         if (_httpClient == null) {
             throw new InvalidOperationException("HttpClient is unavailable");
         }
@@ -154,7 +155,7 @@ public class FloodService(
         using var request = new HttpRequestMessage(HttpMethod.Get, $"api/torrents/{hash}/contents");
         using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
-        return await webService.DeserializeAsync<List<TorrentContent>>(response);
+        return await webService.DeserializeAsync<ImmutableArray<TorrentContent>>(response);
     }
 
     public async Task<List<string>> GetTorrentFilesAsync(TorrentProperties torrentProperties) {
@@ -168,7 +169,7 @@ public class FloodService(
         }
 
         var torrentContents = await GetTorrentContentsAsync(torrentProperties.Hash);
-        if (torrentContents == null || torrentContents.Count == 0) {
+        if (torrentContents == null || torrentContents.Length == 0) {
             throw new InvalidOperationException($"{torrentProperties.Hash} has no contents");
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Collections.Immutable;
+using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Radarr.Models;
 
@@ -27,11 +28,11 @@ public record Release {
     public int? CustomFormatScore { get; init; }
 
     [JsonPropertyName("customFormats")]
-    public List<string>? CustomFormats { get; init; }
+    public ImmutableArray<string>? CustomFormats { get; init; }
 
     [JsonPropertyName("languages")]
-    public List<Language>? Languages { get; init; }
+    public ImmutableArray<Language>? Languages { get; init; }
 
     [JsonPropertyName("indexerFlags")]
-    public List<string>? IndexerFlags { get; init; }
+    public ImmutableArray<string>? IndexerFlags { get; init; }
 }
