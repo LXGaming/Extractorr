@@ -53,10 +53,10 @@ public class QBittorrentServiceTest : ServiceTestBase {
     public Task DeserializeTorrentInfosAsync() => _torrentClient!.GetTorrentInfosAsync(includeTrackers: true);
 
     [Test]
-    public async Task DeserializeTorrentContentsAsync() {
+    public async Task DeserializeTorrentFilesAsync() {
         var torrentInfos = await _torrentClient!.GetTorrentInfosAsync();
         foreach (var torrentInfo in torrentInfos) {
-            await _torrentClient!.GetTorrentContentsAsync(torrentInfo.Hash);
+            await _torrentClient!.GetTorrentFilesAsync(torrentInfo.Hash);
         }
     }
 }

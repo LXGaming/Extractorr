@@ -3,7 +3,7 @@ using LXGaming.Extractorr.Server.Utilities.Json.Converters;
 
 namespace LXGaming.Extractorr.Server.Services.QBittorrent.Models;
 
-public record TorrentContent {
+public record TorrentFile {
 
     [JsonPropertyName("availability")]
     public double Availability { get; init; }

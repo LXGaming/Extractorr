@@ -199,7 +199,7 @@ public class QBittorrentTorrentClient : TorrentClientBase {
         return await WebService.DeserializeAsync<ImmutableArray<TorrentInfo>>(response);
     }
 
-    public async Task<ImmutableArray<TorrentContent>> GetTorrentContentsAsync(string hash,
+    public async Task<ImmutableArray<TorrentFile>> GetTorrentFilesAsync(string hash,
         IEnumerable<string>? indexes = null) {
         var queries = new Dictionary<string, string?>();
         CollectionUtils.AddIgnoreNull(queries, "hash", hash);
@@ -211,7 +211,7 @@ public class QBittorrentTorrentClient : TorrentClientBase {
             () => new HttpRequestMessage(HttpMethod.Get, $"api/v2/torrents/files{queryString}"),
             HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
-        return await WebService.DeserializeAsync<ImmutableArray<TorrentContent>>(response);
+        return await WebService.DeserializeAsync<ImmutableArray<TorrentFile>>(response);
     }
 
     public async Task AddTorrentTagsAsync(IEnumerable<string> hashes, IEnumerable<string> tags) {

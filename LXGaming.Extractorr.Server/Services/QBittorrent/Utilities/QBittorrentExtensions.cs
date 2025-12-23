@@ -16,23 +16,23 @@ public static class QBittorrentExtensions {
             throw new InvalidOperationException($"{absoluteDirectoryPath} does not exist");
         }
 
-        var torrentContents = await torrentClient.GetTorrentContentsAsync(torrentInfo.Hash);
-        if (torrentContents == null || torrentContents.Length == 0) {
+        var torrentFiles = await torrentClient.GetTorrentFilesAsync(torrentInfo.Hash);
+        if (torrentFiles == null || torrentFiles.Length == 0) {
             throw new InvalidOperationException($"{torrentInfo.Hash} has no contents");
         }
 
         var files = new List<string>();
-        foreach (var torrentContent in torrentContents) {
-            if (string.IsNullOrEmpty(torrentContent.Name)) {
+        foreach (var torrentFile in torrentFiles) {
+            if (string.IsNullOrEmpty(torrentFile.Name)) {
                 continue;
             }
 
-            var contentPath = torrentContent.Name.TrimStart('/');
-            if (string.IsNullOrEmpty(contentPath)) {
+            var filePath = torrentFile.Name.TrimStart('/');
+            if (string.IsNullOrEmpty(filePath)) {
                 continue;
             }
 
-            var absolutePath = Path.GetFullPath(contentPath, absoluteDirectoryPath);
+            var absolutePath = Path.GetFullPath(filePath, absoluteDirectoryPath);
             if (!File.Exists(absolutePath)) {
                 if (!Directory.Exists(absolutePath)) {
                     throw new InvalidOperationException($"{absolutePath} does not exist");
