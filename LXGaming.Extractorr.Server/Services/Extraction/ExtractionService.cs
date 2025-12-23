@@ -110,7 +110,7 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
 
     private bool Move(string sourceDirectory, string destinationDirectory) {
         var files = new Dictionary<string, string>();
-        foreach (var file in Directory.EnumerateFiles(sourceDirectory)) {
+        foreach (var file in Directory.EnumerateFiles(sourceDirectory, "*", SearchOption.AllDirectories)) {
             var destinationFile = Path.Combine(destinationDirectory, Path.GetRelativePath(sourceDirectory, file));
             if (File.Exists(destinationFile)) {
                 logger.LogWarning("Cannot move {Source} as {Destination} already exists", file, destinationFile);
