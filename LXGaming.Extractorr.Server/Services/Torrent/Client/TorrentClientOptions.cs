@@ -21,4 +21,9 @@ public sealed class TorrentClientOptions {
     public Dictionary<string, string> AdditionalHeaders { get; set; } = new();
 
     public bool SkipActiveExtraction { get; set; }
+
+    public override string ToString() {
+        var name = !string.IsNullOrWhiteSpace(Name) ? Name : "No Name";
+        return $"{name} ({Type})";
+    }
 }

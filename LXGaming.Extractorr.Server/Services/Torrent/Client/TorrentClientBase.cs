@@ -48,7 +48,7 @@ public abstract class TorrentClientBase : ITorrentClient {
     }
 
     public override string ToString() {
-        return $"{Options.Name} ({Options.Type})";
+        return Options.ToString();
     }
 
     public void Dispose() {

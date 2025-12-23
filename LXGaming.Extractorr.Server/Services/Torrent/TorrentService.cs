@@ -52,7 +52,7 @@ public class TorrentService(
             }
 
             if (!options.Enabled) {
-                logger.LogWarning("{Name} ({Type}) torrent client is not enabled", options.Name, options.Type);
+                logger.LogWarning("{Client} torrent client is not enabled", options);
                 continue;
             }
 
@@ -60,15 +60,14 @@ public class TorrentService(
             try {
                 client = clientProvider.CreateClient(section);
             } catch (Exception ex) {
-                logger.LogError(ex, "Encountered an error while creating {Name} ({Type}) torrent client",
-                    options.Name, options.Type);
+                logger.LogError(ex, "Encountered an error while creating {Client} torrent client", options);
                 continue;
             }
 
             if (_clients.Add(client)) {
-                logger.LogInformation("{Name} ({Type}) torrent client registered", options.Name, options.Type);
+                logger.LogInformation("{Client} torrent client registered", options);
             } else {
-                logger.LogWarning("{Name} ({Type}) torrent client is already registered", options.Name, options.Type);
+                logger.LogWarning("{Client} torrent client is already registered", options);
             }
         }
 
