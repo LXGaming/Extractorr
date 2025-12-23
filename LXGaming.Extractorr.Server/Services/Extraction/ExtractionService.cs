@@ -129,11 +129,11 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
     }
 
     private static void Delete(string path, bool recursive) {
-        foreach (var file in Directory.EnumerateFiles(path)) {
+        foreach (var file in Directory.EnumerateFiles(path, "*", SearchOption.TopDirectoryOnly)) {
             File.Delete(file);
         }
 
-        foreach (var directory in Directory.EnumerateDirectories(path)) {
+        foreach (var directory in Directory.EnumerateDirectories(path, "*", SearchOption.TopDirectoryOnly)) {
             Directory.Delete(directory, recursive);
         }
     }
