@@ -3,5 +3,6 @@
 public enum TorrentClientType {
 
     None,
-    Flood
+    Flood,
+    QBittorrent
 }
