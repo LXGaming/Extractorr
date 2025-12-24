@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using LXGaming.Common.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LXGaming.Extractorr.Server.Utilities;

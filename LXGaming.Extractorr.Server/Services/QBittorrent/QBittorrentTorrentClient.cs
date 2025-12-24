@@ -4,7 +4,6 @@ using System.Security.Authentication;
 using LXGaming.Common.Utilities;
 using LXGaming.Extractorr.Server.Services.QBittorrent.Models;
 using LXGaming.Extractorr.Server.Services.Torrent.Client;
-using StringUtils = LXGaming.Extractorr.Server.Utilities.StringUtils;
 
 namespace LXGaming.Extractorr.Server.Services.QBittorrent;
 
