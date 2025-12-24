@@ -25,11 +25,17 @@ public class WebService(IConfiguration configuration, JsonSerializerOptions json
     }
 
     public SocketsHttpHandler CreateHandler() {
-        return new SocketsHttpHandler {
-            AutomaticDecompression = DecompressionMethods.All,
-            PooledConnectionLifetime = TimeSpan.FromMilliseconds(_options.PooledConnectionLifetime),
-            UseCookies = false
-        };
+        var handler = new SocketsHttpHandler();
+        try {
+            handler.AutomaticDecompression = DecompressionMethods.All;
+            handler.PooledConnectionLifetime = TimeSpan.FromMilliseconds(_options.PooledConnectionLifetime);
+            handler.UseCookies = false;
+        } catch (Exception) {
+            handler.Dispose();
+            throw;
+        }
+
+        return handler;
     }
 
     public virtual async Task<T> DeserializeAsync<T>(HttpResponseMessage response,
