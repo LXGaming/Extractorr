@@ -6,7 +6,7 @@ public interface ITorrentClientProvider {
 
     TorrentClientType Type { get; }
 
-    ITorrentClient CreateClient(IConfigurationSection configuration);
+    ITorrentClient CreateClient(IConfigurationSection section);
 
     ITorrentClient? CreateLegacyClient() {
         return null;
