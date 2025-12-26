@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections.Immutable;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using LXGaming.Extractorr.Server.Services.QBittorrent.Models;
 
@@ -8,7 +9,7 @@ public class PieceRangeConverter : JsonConverter<PieceRange> {
 
     public override PieceRange Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         if (reader.TokenType == JsonTokenType.StartArray) {
-            var array = JsonSerializer.Deserialize<int[]>(ref reader, options);
+            var array = JsonSerializer.Deserialize<ImmutableArray<int>>(ref reader, options);
             if (array is not { Length: 2 }) {
                 throw new JsonException("Invalid array length.");
             }
