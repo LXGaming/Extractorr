@@ -2,7 +2,7 @@
 
 namespace LXGaming.Extractorr.Server.Services.Torrent.Client;
 
-public sealed class TorrentClientOptions {
+public class TorrentClientOptions {
 
     public TorrentClientType Type { get; set; }
 
