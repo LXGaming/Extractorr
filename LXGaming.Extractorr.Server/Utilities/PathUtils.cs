@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Utilities;
+namespace LXGaming.Extractorr.Server.Utilities;
 
 public static class PathUtils {
 

@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Flood;
+namespace LXGaming.Extractorr.Server.Services.Flood;
 
 public sealed class FloodOptions {
 

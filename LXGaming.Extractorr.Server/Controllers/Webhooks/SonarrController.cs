@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using LXGaming.Extractorr.Server.Services.Sonarr;
 using LXGaming.Extractorr.Server.Utilities;
 using Microsoft.AspNetCore.Mvc;

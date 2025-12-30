@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Event.Models;
+namespace LXGaming.Extractorr.Server.Services.Event.Models;
 
 public class GrabEventArgs : EventArgs {
 

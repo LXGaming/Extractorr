@@ -1,4 +1,4 @@
-﻿using LXGaming.Extractorr.Server.Services.Event.Models;
+using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.QBittorrent.Utilities;
 using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Services.Torrent;

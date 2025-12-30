@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Web;
+namespace LXGaming.Extractorr.Server.Services.Web;
 
 public sealed class WebOptions {
 

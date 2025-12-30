@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using LXGaming.Extractorr.Server.Services.Extraction.Results;
 using LXGaming.Extractorr.Server.Utilities;
 using LXGaming.Hosting;

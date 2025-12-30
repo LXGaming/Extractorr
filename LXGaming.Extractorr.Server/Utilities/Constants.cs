@@ -1,4 +1,4 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using LXGaming.Common.Utilities;
 
 namespace LXGaming.Extractorr.Server.Utilities;

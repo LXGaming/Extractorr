@@ -1,4 +1,4 @@
-﻿using LXGaming.Extractorr.Server.Services.Event;
+using LXGaming.Extractorr.Server.Services.Event;
 using LXGaming.Extractorr.Server.Services.QBittorrent;
 using LXGaming.Extractorr.Server.Services.Torrent;
 using LXGaming.Extractorr.Server.Services.Torrent.Client;

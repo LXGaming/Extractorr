@@ -1,4 +1,4 @@
-﻿using LXGaming.Extractorr.Server.Services.Event.Models;
+using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood.Utilities;
 using LXGaming.Extractorr.Server.Services.Quartz;

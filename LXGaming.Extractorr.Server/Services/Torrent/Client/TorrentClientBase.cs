@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using LXGaming.Extractorr.Server.Services.Web;
 
 namespace LXGaming.Extractorr.Server.Services.Torrent.Client;

@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Sonarr;
+namespace LXGaming.Extractorr.Server.Services.Sonarr;
 
 public sealed class SonarrOptions {
 

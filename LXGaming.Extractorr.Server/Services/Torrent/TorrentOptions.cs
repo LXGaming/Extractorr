@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Torrent;
+namespace LXGaming.Extractorr.Server.Services.Torrent;
 
 public sealed class TorrentOptions {
 

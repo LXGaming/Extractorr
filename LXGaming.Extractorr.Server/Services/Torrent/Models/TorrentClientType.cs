@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Torrent.Models;
+namespace LXGaming.Extractorr.Server.Services.Torrent.Models;
 
 public enum TorrentClientType {
 

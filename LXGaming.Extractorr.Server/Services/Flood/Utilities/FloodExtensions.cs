@@ -1,4 +1,4 @@
-﻿using LXGaming.Extractorr.Server.Services.Flood.Models;
+using LXGaming.Extractorr.Server.Services.Flood.Models;
 using LXGaming.Extractorr.Server.Utilities;
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Utilities;

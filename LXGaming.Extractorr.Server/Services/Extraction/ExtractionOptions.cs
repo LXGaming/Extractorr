@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Extraction;
+namespace LXGaming.Extractorr.Server.Services.Extraction;
 
 public sealed class ExtractionOptions {
 

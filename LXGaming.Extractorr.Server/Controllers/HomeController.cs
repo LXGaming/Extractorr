@@ -1,4 +1,4 @@
-﻿using LXGaming.Extractorr.Server.Utilities;
+using LXGaming.Extractorr.Server.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LXGaming.Extractorr.Server.Controllers;

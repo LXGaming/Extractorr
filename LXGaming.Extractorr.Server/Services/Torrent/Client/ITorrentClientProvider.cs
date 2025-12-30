@@ -1,4 +1,4 @@
-﻿using LXGaming.Extractorr.Server.Services.Torrent.Models;
+using LXGaming.Extractorr.Server.Services.Torrent.Models;
 
 namespace LXGaming.Extractorr.Server.Services.Torrent.Client;
 

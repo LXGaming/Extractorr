@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 
 namespace LXGaming.Extractorr.Server.Services.Flood.Models;

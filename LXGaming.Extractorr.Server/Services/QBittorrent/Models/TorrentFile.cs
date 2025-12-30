@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using LXGaming.Extractorr.Server.Utilities.Json.Converters;
 
 namespace LXGaming.Extractorr.Server.Services.QBittorrent.Models;

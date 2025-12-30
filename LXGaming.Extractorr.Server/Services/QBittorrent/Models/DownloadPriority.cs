@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.QBittorrent.Models;
+namespace LXGaming.Extractorr.Server.Services.QBittorrent.Models;
 
 public enum DownloadPriority {
 

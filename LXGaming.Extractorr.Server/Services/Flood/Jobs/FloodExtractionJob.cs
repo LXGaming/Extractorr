@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.Flood.Models;
 using LXGaming.Extractorr.Server.Services.Flood.Utilities;

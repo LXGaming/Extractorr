@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.Radarr;
+namespace LXGaming.Extractorr.Server.Services.Radarr;
 
 public sealed class RadarrOptions {
 

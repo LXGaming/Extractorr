@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Extractorr.Server.Services.QBittorrent;
+namespace LXGaming.Extractorr.Server.Services.QBittorrent;
 
 public sealed class QBittorrentOptions {
 
