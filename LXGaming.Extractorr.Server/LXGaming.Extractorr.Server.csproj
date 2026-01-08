@@ -31,7 +31,7 @@
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.15.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.File.Archive" Version="1.0.6" />
-    <PackageReference Include="SharpCompress" Version="0.42.1" />
+    <PackageReference Include="SharpCompress" Version="0.44.0" />
   </ItemGroup>
 
 </Project>
