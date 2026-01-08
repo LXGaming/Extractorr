@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using LXGaming.Extractorr.Server.Services.Extraction.Results;
 using LXGaming.Extractorr.Server.Utilities;
 using LXGaming.Hosting;
@@ -78,7 +78,7 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
     }
 
     private async Task<ExtractResult> ExtractAsync(string path, string destinationDirectory) {
-        var volumesBuilder = ImmutableHashSet.CreateBuilder<string>();
+        var volumes = new List<string>();
         try {
             using var archive = ArchiveFactory.Open(path);
             foreach (var volume in archive.Volumes) {
@@ -87,7 +87,7 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
                 }
 
                 var fileName = Path.GetFullPath(volume.FileName);
-                volumesBuilder.Add(fileName);
+                volumes.Add(fileName);
             }
 
             logger.LogInformation("Extracting {Path} ({ArchiveType})", path, archive.Type);
@@ -101,10 +101,10 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
                 await entry.WriteToDirectoryAsync(destinationDirectory);
             }
 
-            return ExtractResult.FromSuccess(volumesBuilder.ToImmutable());
+            return ExtractResult.FromSuccess(volumes.ToFrozenSet());
         } catch (Exception ex) {
             logger.LogError(ex, "Encountered an error while extracting {Path}", path);
-            return ExtractResult.FromError(ex, volumesBuilder.ToImmutable());
+            return ExtractResult.FromError(ex, volumes.ToFrozenSet());
         }
     }
 

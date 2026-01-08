@@ -1,4 +1,4 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 
 namespace LXGaming.Extractorr.Server.Services.Extraction.Results;
 
@@ -8,18 +8,18 @@ public class ExtractResult {
 
     public Exception? Exception { get; }
 
-    public ImmutableHashSet<string>? Volumes { get; }
+    public FrozenSet<string>? Volumes { get; }
 
-    private ExtractResult(Exception? exception, ImmutableHashSet<string>? volumes) {
+    private ExtractResult(Exception? exception, FrozenSet<string>? volumes) {
         Exception = exception;
         Volumes = volumes;
     }
 
-    public static ExtractResult FromSuccess(ImmutableHashSet<string> volumes) {
+    public static ExtractResult FromSuccess(FrozenSet<string> volumes) {
         return new ExtractResult(null, volumes);
     }
 
-    public static ExtractResult FromError(Exception exception, ImmutableHashSet<string>? volumes = null) {
+    public static ExtractResult FromError(Exception exception, FrozenSet<string>? volumes = null) {
         return new ExtractResult(exception, volumes);
     }
 }

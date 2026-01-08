@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using LXGaming.Common.Text.Json;
+using LXGaming.Common.Text.Json.Serialization.Converters;
 
 namespace LXGaming.Extractorr.Server.Services.Web.Utilities;
 
@@ -20,6 +21,10 @@ public static class WebExtensions {
         where TService : WebService where TImplementation : TService {
         return services
             .AddSingleton(new JsonSerializerOptions {
+                Converters = {
+                    new FrozenDictionaryConverterFactory(),
+                    new FrozenSetConverterFactory()
+                },
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 TypeInfoResolver = new DefaultJsonTypeInfoResolver()
                     .WithOrderPropertiesModifier()
