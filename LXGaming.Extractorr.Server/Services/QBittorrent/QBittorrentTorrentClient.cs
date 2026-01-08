@@ -188,8 +188,7 @@ public class QBittorrentTorrentClient : TorrentClientBase {
         CollectionUtils.AddIgnoreNull(queries, "hashes", hashes != null ? string.Join('|', hashes) : null);
         CollectionUtils.AddIgnoreNull(queries, "private", isPrivate?.ToString());
         CollectionUtils.AddIgnoreNull(queries, "includeTrackers", includeTrackers?.ToString());
-
-        var queryString = QueryString.Create(queries);
+        var queryString = HttpUtils.CreateQueryString(queries);
 
         using var response = await SendAsync(
             () => new HttpRequestMessage(HttpMethod.Get, $"api/v2/torrents/info{queryString}"),
@@ -203,8 +202,7 @@ public class QBittorrentTorrentClient : TorrentClientBase {
         var queries = new Dictionary<string, string?>();
         CollectionUtils.AddIgnoreNull(queries, "hash", hash);
         CollectionUtils.AddIgnoreNull(queries, "indexes", indexes != null ? string.Join('|', indexes) : null);
-
-        var queryString = QueryString.Create(queries);
+        var queryString = HttpUtils.CreateQueryString(queries);
 
         using var response = await SendAsync(
             () => new HttpRequestMessage(HttpMethod.Get, $"api/v2/torrents/files{queryString}"),
