@@ -97,16 +97,16 @@ public record TorrentInfo {
     public required string Name { get; init; }
 
     [JsonPropertyName("num_complete")]
-    public int Complete { get; init; }
+    public int SeedsTotal { get; init; }
 
     [JsonPropertyName("num_incomplete")]
-    public int Incomplete { get; init; }
+    public int LeechesTotal { get; init; }
 
     [JsonPropertyName("num_leechs")]
-    public int Leeches { get; init; }
+    public int LeechesConnected { get; init; }
 
     [JsonPropertyName("num_seeds")]
-    public int Seeds { get; init; }
+    public int SeedsConnected { get; init; }
 
     /// <remarks>
     /// Added in 5.0.0
