@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using System.Net;
 using System.Security.Authentication;
+using System.Text.Encodings.Web;
 using LXGaming.Extractorr.Server.Services.Flood.Models;
 using LXGaming.Extractorr.Server.Services.Torrent.Client;
 using LXGaming.Extractorr.Server.Utilities;
@@ -102,8 +103,10 @@ public class FloodTorrentClient : TorrentClientBase {
     }
 
     public async Task<ImmutableArray<TorrentContent>> GetTorrentContentsAsync(string hash) {
+        var encodedHash = UrlEncoder.Default.Encode(hash);
+
         using var response = await SendAsync(
-            () => new HttpRequestMessage(HttpMethod.Get, $"api/torrents/{hash}/contents"),
+            () => new HttpRequestMessage(HttpMethod.Get, $"api/torrents/{encodedHash}/contents"),
             HttpCompletionOption.ResponseHeadersRead);
         response.EnsureSuccessStatusCode();
         return await WebService.DeserializeAsync<ImmutableArray<TorrentContent>>(response);
