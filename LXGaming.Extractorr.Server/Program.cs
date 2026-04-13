@@ -51,8 +51,7 @@ try {
 
     builder.Services.AddHealthChecks();
 
-    builder.Services.Configure<QuartzOptions>(builder.Configuration.GetSection("Quartz"));
-    builder.Services.AddQuartz();
+    builder.Services.AddQuartz(builder.Configuration.GetSection("Quartz"));
     builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
     builder.Services.AddRouting(options => options.LowercaseUrls = true);

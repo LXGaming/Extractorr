@@ -80,8 +80,8 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
     private async Task<ExtractResult> ExtractAsync(string path, string destinationDirectory) {
         var volumes = new List<string>();
         try {
-            using var archive = ArchiveFactory.Open(path);
-            foreach (var volume in archive.Volumes) {
+            await using var archive = await ArchiveFactory.OpenAsyncArchive(path);
+            await foreach (var volume in archive.VolumesAsync) {
                 if (string.IsNullOrEmpty(volume.FileName)) {
                     continue;
                 }
@@ -91,7 +91,7 @@ public class ExtractionService(IConfiguration configuration, ILogger<ExtractionS
             }
 
             logger.LogInformation("Extracting {Path} ({ArchiveType})", path, archive.Type);
-            foreach (var entry in archive.Entries) {
+            await foreach (var entry in archive.EntriesAsync) {
                 if (entry.IsDirectory) {
                     continue;
                 }
