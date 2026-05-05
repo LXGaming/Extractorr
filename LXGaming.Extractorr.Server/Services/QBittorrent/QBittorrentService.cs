@@ -55,9 +55,9 @@ public class QBittorrentService(
     }
 
     public ITorrentClient CreateClient(IConfigurationSection section) {
-        var options = section.Get<TorrentClientOptions>();
+        var options = section.Get<QBittorrentTorrentClientOptions>();
         if (options == null) {
-            throw new InvalidOperationException("TorrentClientOptions is unavailable.");
+            throw new InvalidOperationException("QBittorrentTorrentClientOptions is unavailable.");
         }
 
         return new QBittorrentTorrentClient(options, serviceProvider);

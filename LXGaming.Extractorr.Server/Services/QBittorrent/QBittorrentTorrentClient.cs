@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Security.Authentication;
 using LXGaming.Common.Utilities;
 using LXGaming.Extractorr.Server.Services.QBittorrent.Models;
@@ -7,14 +8,14 @@ using LXGaming.Extractorr.Server.Services.Torrent.Client;
 
 namespace LXGaming.Extractorr.Server.Services.QBittorrent;
 
-public class QBittorrentTorrentClient : TorrentClientBase<TorrentClientOptions> {
+public class QBittorrentTorrentClient : TorrentClientBase<QBittorrentTorrentClientOptions> {
 
     private readonly object _lock;
     private bool _initialAuthentication;
     private volatile Task<bool> _authenticateTask;
     private Version? _version;
 
-    public QBittorrentTorrentClient(TorrentClientOptions options, IServiceProvider serviceProvider)
+    public QBittorrentTorrentClient(QBittorrentTorrentClientOptions options, IServiceProvider serviceProvider)
         : base(options, serviceProvider) {
         _lock = new object();
         _initialAuthentication = true;
@@ -25,13 +26,13 @@ public class QBittorrentTorrentClient : TorrentClientBase<TorrentClientOptions> 
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         bool skipAuthentication = false, CancellationToken cancellationToken = default) {
         if (skipAuthentication) {
-            using var request = func();
+            using var request = CreateRequest(func);
             return await HttpClient.SendAsync(request, completionOption, cancellationToken);
         }
 
         var existingAuthenticateTask = _authenticateTask;
         if (await existingAuthenticateTask) {
-            using var request = func();
+            using var request = CreateRequest(func);
             var response = await HttpClient.SendAsync(request, completionOption, cancellationToken);
             if (response.StatusCode != HttpStatusCode.Forbidden) {
                 return response;
@@ -49,7 +50,7 @@ public class QBittorrentTorrentClient : TorrentClientBase<TorrentClientOptions> 
         }
 
         if (await _authenticateTask) {
-            using var request = func();
+            using var request = CreateRequest(func);
             return await HttpClient.SendAsync(request, completionOption, cancellationToken);
         }
 
@@ -75,6 +76,20 @@ public class QBittorrentTorrentClient : TorrentClientBase<TorrentClientOptions> 
         }
     }
 
+    protected HttpRequestMessage CreateRequest(Func<HttpRequestMessage> func) {
+        var request = func();
+        try {
+            if (Options.UsingApiKey) {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Options.ApiKey);
+            }
+        } catch (Exception) {
+            request.Dispose();
+            throw;
+        }
+
+        return request;
+    }
+
     public bool IsVersionAtLeast(int major, int minor, int build) {
         if (_version == null) {
             throw new InvalidOperationException("qBittorrent version is unavailable.");
@@ -85,7 +100,7 @@ public class QBittorrentTorrentClient : TorrentClientBase<TorrentClientOptions> 
 
     #region Auth
     protected async Task<bool> LoginAsync() {
-        if (Options.BypassAuthentication) {
+        if (Options.BypassAuthentication || Options.UsingApiKey) {
             return true;
         }
 
@@ -120,7 +135,7 @@ public class QBittorrentTorrentClient : TorrentClientBase<TorrentClientOptions> 
     }
 
     protected async Task LogoutAsync() {
-        if (Options.BypassAuthentication) {
+        if (Options.BypassAuthentication || Options.UsingApiKey) {
             return;
         }
 
