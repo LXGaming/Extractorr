@@ -11,7 +11,7 @@ public static class QBittorrentExtensions {
 
         var torrentFiles = await torrentClient.GetTorrentFilesAsync(torrentInfo.Hash);
         if (torrentFiles == null || torrentFiles.Length == 0) {
-            throw new InvalidOperationException($"{torrentInfo.Name} ({torrentInfo.Hash}) has no contents");
+            throw new InvalidOperationException($"{torrentInfo.Name} ({torrentInfo.Hash}) has no contents.");
         }
 
         var files = new List<string>();
@@ -23,12 +23,12 @@ public static class QBittorrentExtensions {
 
             var path = Path.GetFullPath(filePath, torrentPath);
             if (!path.StartsWith(torrentPath)) {
-                throw new IOException($"{path} is not inside {torrentPath}");
+                throw new IOException($"{path} is not inside {torrentPath}.");
             }
 
             if (!File.Exists(path)) {
                 if (!Directory.Exists(path)) {
-                    throw new IOException($"{path} does not exist");
+                    throw new IOException($"{path} does not exist.");
                 }
 
                 continue;
@@ -42,7 +42,7 @@ public static class QBittorrentExtensions {
 
     public static string GetPath(this TorrentInfo torrentInfo) {
         var savePath = PathUtils.GetFullDirectoryPath(torrentInfo.SavePath);
-        return Directory.Exists(savePath) ? savePath : throw new IOException($"{savePath} does not exist");
+        return Directory.Exists(savePath) ? savePath : throw new IOException($"{savePath} does not exist.");
     }
 
     public static async Task<bool> SetTorrentTagAsync(this QBittorrentTorrentClient torrentClient,

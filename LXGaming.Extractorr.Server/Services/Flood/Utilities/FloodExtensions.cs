@@ -11,7 +11,7 @@ public static class FloodExtensions {
 
         var torrentContents = await torrentClient.GetTorrentContentsAsync(torrentProperties.Hash);
         if (torrentContents == null || torrentContents.Length == 0) {
-            throw new InvalidOperationException($"{torrentProperties.Name} ({torrentProperties.Hash}) has no contents");
+            throw new InvalidOperationException($"{torrentProperties.Name} ({torrentProperties.Hash}) has no contents.");
         }
 
         var files = new List<string>();
@@ -23,12 +23,12 @@ public static class FloodExtensions {
 
             var path = Path.GetFullPath(contentPath, torrentPath);
             if (!path.StartsWith(torrentPath)) {
-                throw new IOException($"{path} is not inside {torrentPath}");
+                throw new IOException($"{path} is not inside {torrentPath}.");
             }
 
             if (!File.Exists(path)) {
                 if (!Directory.Exists(path)) {
-                    throw new IOException($"{path} does not exist");
+                    throw new IOException($"{path} does not exist.");
                 }
 
                 continue;
@@ -44,6 +44,6 @@ public static class FloodExtensions {
         var directoryPath = PathUtils.GetFullDirectoryPath(torrentProperties.Directory);
         return Directory.Exists(directoryPath)
             ? directoryPath
-            : throw new IOException($"{directoryPath} does not exist");
+            : throw new IOException($"{directoryPath} does not exist.");
     }
 }

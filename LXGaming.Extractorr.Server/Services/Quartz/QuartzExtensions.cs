@@ -15,7 +15,7 @@ public static class QuartzExtensions {
     public static T GetRequired<T>(this JobDataMap jobDataMap, string key) {
         var value = jobDataMap.Get<T>(key);
         if (value == null) {
-            throw new InvalidOperationException($"Key '{key}' not found");
+            throw new InvalidOperationException($"Key '{key}' not found.");
         }
 
         return value;

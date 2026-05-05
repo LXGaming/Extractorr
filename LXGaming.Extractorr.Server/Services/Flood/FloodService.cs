@@ -57,7 +57,7 @@ public class FloodService(
     public ITorrentClient CreateClient(IConfigurationSection section) {
         var options = section.Get<TorrentClientOptions>();
         if (options == null) {
-            throw new InvalidOperationException("TorrentClientOptions is unavailable");
+            throw new InvalidOperationException("TorrentClientOptions is unavailable.");
         }
 
         return new FloodTorrentClient(options, serviceProvider);
