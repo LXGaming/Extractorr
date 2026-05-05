@@ -3,13 +3,14 @@ using LXGaming.Extractorr.Server.Services.Web;
 
 namespace LXGaming.Extractorr.Server.Services.Torrent.Client;
 
-public abstract class TorrentClientBase : ITorrentClient {
+public abstract class TorrentClientBase<TOptions> : ITorrentClient
+    where TOptions : TorrentClientOptions {
 
     public HashSet<string> ExcludedTorrents { get; } = [];
 
     public bool SkipActiveExtraction => Options.SkipActiveExtraction;
 
-    protected virtual TorrentClientOptions Options { get; }
+    protected TOptions Options { get; }
 
     protected ILogger Logger { get; }
 
@@ -19,7 +20,7 @@ public abstract class TorrentClientBase : ITorrentClient {
 
     private bool _disposed;
 
-    protected TorrentClientBase(TorrentClientOptions options, IServiceProvider serviceProvider) {
+    protected TorrentClientBase(TOptions options, IServiceProvider serviceProvider) {
         Options = options;
         Logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(GetType());
         WebService = serviceProvider.GetRequiredService<WebService>();

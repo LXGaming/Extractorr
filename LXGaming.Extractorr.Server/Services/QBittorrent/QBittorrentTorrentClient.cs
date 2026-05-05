@@ -7,7 +7,7 @@ using LXGaming.Extractorr.Server.Services.Torrent.Client;
 
 namespace LXGaming.Extractorr.Server.Services.QBittorrent;
 
-public class QBittorrentTorrentClient : TorrentClientBase {
+public class QBittorrentTorrentClient : TorrentClientBase<TorrentClientOptions> {
 
     private readonly object _lock;
     private bool _initialAuthentication;

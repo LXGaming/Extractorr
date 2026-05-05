@@ -8,7 +8,7 @@ using LXGaming.Extractorr.Server.Utilities;
 
 namespace LXGaming.Extractorr.Server.Services.Flood;
 
-public class FloodTorrentClient : TorrentClientBase {
+public class FloodTorrentClient : TorrentClientBase<TorrentClientOptions> {
 
     private readonly object _lock;
     private bool _initialAuthentication;
