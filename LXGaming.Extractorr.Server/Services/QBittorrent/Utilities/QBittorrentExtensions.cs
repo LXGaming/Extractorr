@@ -46,18 +46,14 @@ public static class QBittorrentExtensions {
     }
 
     public static async Task<bool> SetTorrentTagAsync(this QBittorrentTorrentClient torrentClient,
-        TorrentInfo torrentInfo, string tag, bool state) {
-        if (state) {
-            if (torrentInfo.Tags.Contains(tag)) {
-                return false;
-            }
+        TorrentInfo torrentInfo, string tag, bool value) {
+        if (torrentInfo.Tags.Contains(tag) == value) {
+            return false;
+        }
 
+        if (value) {
             await torrentClient.AddTorrentTagsAsync([torrentInfo.Hash], [tag]);
         } else {
-            if (!torrentInfo.Tags.Contains(tag)) {
-                return false;
-            }
-
             await torrentClient.RemoveTorrentTagsAsync([torrentInfo.Hash], [tag]);
         }
 
