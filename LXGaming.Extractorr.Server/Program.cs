@@ -60,13 +60,12 @@ try {
     builder.Services.AddAllServices();
 
     var app = builder.Build();
-
     app.UseForwardedHeaders();
 
     app.UseHttpsRedirection();
-
     app.UseSerilogRequestLogging();
 
+    app.UseRouting();
     app.UseAuthorization();
 
     app.MapControllers();
