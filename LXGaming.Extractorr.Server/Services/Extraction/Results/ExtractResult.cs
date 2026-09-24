@@ -2,7 +2,7 @@ using System.Collections.Frozen;
 
 namespace LXGaming.Extractorr.Server.Services.Extraction.Results;
 
-public class ExtractResult {
+public record ExtractResult {
 
     public bool IsSuccess => Exception == null;
 
