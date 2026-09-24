@@ -25,22 +25,23 @@ public class QBittorrentService(
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         await scheduler.AddJob(
             JobBuilder.Create<QBittorrentGrabJob>().WithIdentity(QBittorrentGrabJob.JobKey).StoreDurably().Build(),
-            false,
+            default,
             cancellationToken);
 
         await scheduler.AddJob(
             JobBuilder.Create<QBittorrentImportJob>().WithIdentity(QBittorrentImportJob.JobKey).StoreDurably().Build(),
-            false,
+            default,
             cancellationToken);
 
         if (!string.IsNullOrEmpty(_options.Schedule)) {
             await scheduler.ScheduleJob(
                 JobBuilder.Create<QBittorrentExtractionJob>().WithIdentity(QBittorrentExtractionJob.JobKey).Build(),
                 TriggerBuilder.Create().WithCronSchedule(_options.Schedule).Build(),
+                default,
                 cancellationToken);
 
             if (_options.RunOnStart) {
-                await scheduler.TriggerJob(QBittorrentExtractionJob.JobKey, cancellationToken);
+                await scheduler.TriggerJob(QBittorrentExtractionJob.JobKey, null, cancellationToken);
             }
         } else {
             logger.LogWarning("qBittorrent schedule has not been configured");

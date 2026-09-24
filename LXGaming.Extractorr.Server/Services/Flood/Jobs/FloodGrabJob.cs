@@ -1,5 +1,4 @@
 using LXGaming.Extractorr.Server.Services.Event.Models;
-using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Services.Torrent;
 using LXGaming.Extractorr.Server.Services.Torrent.Utilities;
 using LXGaming.Extractorr.Server.Utilities;
@@ -10,10 +9,10 @@ namespace LXGaming.Extractorr.Server.Services.Flood.Jobs;
 public class FloodGrabJob(ILogger<FloodGrabJob> logger, TorrentService torrentService) : IJob {
 
     public const string EventKey = "event";
-    public static readonly JobKey JobKey = JobKey.Create(nameof(FloodGrabJob));
+    public static readonly JobKey JobKey = new(nameof(FloodGrabJob));
 
-    public async Task Execute(IJobExecutionContext context) {
-        var eventArgs = context.MergedJobDataMap.GetRequired<GrabEventArgs>(EventKey);
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default) {
+        var eventArgs = context.MergedJobDataMap.Get<GrabEventArgs>(EventKey);
 
         foreach (var torrentClient in torrentService.GetClients<FloodTorrentClient>()) {
             try {

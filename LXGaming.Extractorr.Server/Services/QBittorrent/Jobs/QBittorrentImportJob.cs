@@ -1,7 +1,6 @@
 using LXGaming.Extractorr.Server.Services.Event.Models;
 using LXGaming.Extractorr.Server.Services.Extraction;
 using LXGaming.Extractorr.Server.Services.QBittorrent.Utilities;
-using LXGaming.Extractorr.Server.Services.Quartz;
 using LXGaming.Extractorr.Server.Services.Torrent;
 using LXGaming.Extractorr.Server.Services.Torrent.Utilities;
 using Quartz;
@@ -14,10 +13,10 @@ public class QBittorrentImportJob(
     TorrentService torrentService) : IJob {
 
     public const string EventKey = "event";
-    public static readonly JobKey JobKey = JobKey.Create(nameof(QBittorrentImportJob));
+    public static readonly JobKey JobKey = new(nameof(QBittorrentImportJob));
 
-    public async Task Execute(IJobExecutionContext context) {
-        var eventArgs = context.MergedJobDataMap.GetRequired<ImportEventArgs>(EventKey);
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default) {
+        var eventArgs = context.MergedJobDataMap.Get<ImportEventArgs>(EventKey);
 
         foreach (var torrentClient in torrentService.GetClients<QBittorrentTorrentClient>()) {
             try {

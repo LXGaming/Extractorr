@@ -15,9 +15,9 @@ public class FloodExtractionJob(
     ILogger<FloodExtractionJob> logger,
     TorrentService torrentService) : IJob {
 
-    public static readonly JobKey JobKey = JobKey.Create(nameof(FloodExtractionJob));
+    public static readonly JobKey JobKey = new(nameof(FloodExtractionJob));
 
-    public async Task Execute(IJobExecutionContext context) {
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default) {
         foreach (var torrentClient in torrentService.GetClients<FloodTorrentClient>()) {
             try {
                 await ExecuteAsync(torrentClient);

@@ -14,9 +14,9 @@ public class QBittorrentExtractionJob(
     ILogger<QBittorrentExtractionJob> logger,
     TorrentService torrentService) : IJob {
 
-    public static readonly JobKey JobKey = JobKey.Create(nameof(QBittorrentExtractionJob));
+    public static readonly JobKey JobKey = new(nameof(QBittorrentExtractionJob));
 
-    public async Task Execute(IJobExecutionContext context) {
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default) {
         foreach (var torrentClient in torrentService.GetClients<QBittorrentTorrentClient>()) {
             try {
                 await ExecuteAsync(torrentClient);

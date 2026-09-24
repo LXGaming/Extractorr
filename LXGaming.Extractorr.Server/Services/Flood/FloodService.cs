@@ -25,22 +25,23 @@ public class FloodService(
         var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
         await scheduler.AddJob(
             JobBuilder.Create<FloodGrabJob>().WithIdentity(FloodGrabJob.JobKey).StoreDurably().Build(),
-            false,
+            default,
             cancellationToken);
 
         await scheduler.AddJob(
             JobBuilder.Create<FloodImportJob>().WithIdentity(FloodImportJob.JobKey).StoreDurably().Build(),
-            false,
+            default,
             cancellationToken);
 
         if (!string.IsNullOrEmpty(_options.Schedule)) {
             await scheduler.ScheduleJob(
                 JobBuilder.Create<FloodExtractionJob>().WithIdentity(FloodExtractionJob.JobKey).Build(),
                 TriggerBuilder.Create().WithCronSchedule(_options.Schedule).Build(),
+                default,
                 cancellationToken);
 
             if (_options.RunOnStart) {
-                await scheduler.TriggerJob(FloodExtractionJob.JobKey, cancellationToken);
+                await scheduler.TriggerJob(FloodExtractionJob.JobKey, null, cancellationToken);
             }
         } else {
             logger.LogWarning("Flood schedule has not been configured");
