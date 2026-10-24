@@ -27,7 +27,8 @@ public class WebService(IConfiguration configuration, JsonSerializerOptions json
     public SocketsHttpHandler CreateHandler() {
         var handler = new SocketsHttpHandler();
         try {
-            handler.AutomaticDecompression = DecompressionMethods.All;
+            // CVE-2026-111497 (Brotli out-of-bounds write)
+            handler.AutomaticDecompression = DecompressionMethods.All & ~DecompressionMethods.Brotli;
             handler.PooledConnectionLifetime = TimeSpan.FromMilliseconds(_options.PooledConnectionLifetime);
             handler.UseCookies = false;
         } catch (Exception) {
